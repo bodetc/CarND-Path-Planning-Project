@@ -10,8 +10,8 @@
 class Controller {
 
 public:
-  Trajectory
-  computeTrajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed);
+  Trajectory computeTrajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
+                               const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y);
 };
 
 
