@@ -8,7 +8,7 @@
 #include "Eigen-3.3/Eigen/Core"
 #include "Eigen-3.3/Eigen/QR"
 #include "json.hpp"
-#include "control/Controller.h"
+#include "util/Controller.h"
 
 using namespace std;
 
@@ -106,14 +106,16 @@ int main() {
 
           	json msgJson;
 
-          Controller controller;
+          Map map(map_waypoints_x, map_waypoints_y, map_waypoints_s);
+          Controller controller(map);
+
           Trajectory trajectory = controller.computeTrajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed);
 
           	// TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
           	msgJson["next_x"] = trajectory.getX();
           	msgJson["next_y"] = trajectory.getY();
 
-          	auto msg = "42[\"control\","+ msgJson.dump()+"]";
+          	auto msg = "42[\"util\","+ msgJson.dump()+"]";
 
           	//this_thread::sleep_for(chrono::milliseconds(1000));
           	ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);

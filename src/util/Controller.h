@@ -6,10 +6,14 @@
 #define PATH_PLANNING_CONTROLLER_H
 
 #include "Trajectory.h"
+#include "Map.h"
 
 class Controller {
+  const Map& map;
 
 public:
+  explicit Controller(const Map& map);
+
   Trajectory
   computeTrajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed);
 };
