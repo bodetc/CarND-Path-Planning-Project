@@ -113,15 +113,17 @@ int main() {
           	msgJson["next_x"] = trajectory.getX();
           	msgJson["next_y"] = trajectory.getY();
 
-          	auto msg = "42[\"control\","+ msgJson.dump()+"]";
+          	string msg = "42[\"control\","+ msgJson.dump()+"]";
 
           	//this_thread::sleep_for(chrono::milliseconds(1000));
           	ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+
+          cout << msg << endl;
           
         }
       } else {
         // Manual driving
-        std::string msg = "42[\"manual\",{}]";
+        string msg = "42[\"manual\",{}]";
         ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
       }
     }

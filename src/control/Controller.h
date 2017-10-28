@@ -5,7 +5,7 @@
 #ifndef PATH_PLANNING_CONTROLLER_H
 #define PATH_PLANNING_CONTROLLER_H
 
-#include "Trajectory.h"
+#include "../util/Trajectory.h"
 
 class Controller {
 
