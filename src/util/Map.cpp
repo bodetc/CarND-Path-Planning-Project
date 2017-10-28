@@ -13,7 +13,7 @@ Map::Map(const vector<double> &maps_x, const vector<double> &maps_y, const vecto
                                                                                                      maps_y(maps_y),
                                                                                                      maps_s(maps_s) {}
 
-vector<double> Map::getFrenet(double x, double y, double theta) {
+vector<double> Map::getFrenet(double x, double y, double theta) const {
   int next_wp = NextWaypoint(x,y, theta);
 
   int prev_wp;
@@ -56,7 +56,7 @@ vector<double> Map::getFrenet(double x, double y, double theta) {
   return {frenet_s,frenet_d};
 }
 
-vector<double> Map::getXY(double s, double d) {
+vector<double> Map::getXY(double s, double d) const {
   int prev_wp = -1;
 
   while(s > maps_s[prev_wp+1] && (prev_wp < (int)(maps_s.size()-1) )) {
@@ -80,7 +80,7 @@ vector<double> Map::getXY(double s, double d) {
   return {x,y};
 }
 
-int Map::ClosestWaypoint(double x, double y) {
+int Map::ClosestWaypoint(double x, double y) const {
   double closestLen = 100000; //large number
   int closestWaypoint = 0;
 
@@ -97,7 +97,7 @@ int Map::ClosestWaypoint(double x, double y) {
   return closestWaypoint;
 }
 
-int Map::NextWaypoint(double x, double y, double theta) {
+int Map::NextWaypoint(double x, double y, double theta) const {
   int closestWaypoint = ClosestWaypoint(x,y);
 
   double map_x = maps_x[closestWaypoint];
