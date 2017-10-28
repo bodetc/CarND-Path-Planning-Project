@@ -106,7 +106,7 @@ int main() {
 
           	json msgJson;
 
-          Controller controller;
+          Controller controller(map_waypoints_x, map_waypoints_y, map_waypoints_s);
           Trajectory trajectory = controller.computeTrajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed);
 
           	// TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds

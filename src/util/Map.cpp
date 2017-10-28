@@ -1,19 +1,20 @@
 //
-// Created by Cédric Bodet on 27.10.17.
+// Created by Cédric Bodet on 28.10.17.
 //
-#include "utils.h"
+
 #include <cmath>
+#include "Map.h"
 
 using namespace std;
 
 inline double distance(double x1, double y1, double x2, double y2) { return sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)); }
 
-int ClosestWaypoint(double x, double y, const vector<double> &maps_x, const vector<double> &maps_y);
-int NextWaypoint(double x, double y, double theta, const vector<double> &maps_x, const vector<double> &maps_y);
+Map::Map(const vector<double> &maps_x, const vector<double> &maps_y, const vector<double> &maps_s) : maps_x(maps_x),
+                                                                                                     maps_y(maps_y),
+                                                                                                     maps_s(maps_s) {}
 
-// Transform from Cartesian x,y coordinates to Frenet s,d coordinates
-vector<double> getFrenet(double x, double y, double theta, const vector<double> &maps_x, const vector<double> &maps_y) {
-  int next_wp = NextWaypoint(x,y, theta, maps_x,maps_y);
+vector<double> Map::getFrenet(double x, double y, double theta) {
+  int next_wp = NextWaypoint(x,y, theta);
 
   int prev_wp;
   prev_wp = next_wp-1;
@@ -55,8 +56,7 @@ vector<double> getFrenet(double x, double y, double theta, const vector<double> 
   return {frenet_s,frenet_d};
 }
 
-// Transform from Frenet s,d coordinates to Cartesian x,y
-vector<double> getXY(double s, double d, const vector<double> &maps_s, const vector<double> &maps_x, const vector<double> &maps_y) {
+vector<double> Map::getXY(double s, double d) {
   int prev_wp = -1;
 
   while(s > maps_s[prev_wp+1] && (prev_wp < (int)(maps_s.size()-1) )) {
@@ -72,7 +72,7 @@ vector<double> getXY(double s, double d, const vector<double> &maps_s, const vec
   double seg_x = maps_x[prev_wp]+seg_s*cos(heading);
   double seg_y = maps_y[prev_wp]+seg_s*sin(heading);
 
-  double perp_heading = heading-pi()/2;
+  double perp_heading = heading-M_PI/2;
 
   double x = seg_x + d*cos(perp_heading);
   double y = seg_y + d*sin(perp_heading);
@@ -80,29 +80,25 @@ vector<double> getXY(double s, double d, const vector<double> &maps_s, const vec
   return {x,y};
 }
 
-
-int ClosestWaypoint(double x, double y, const vector<double> &maps_x, const vector<double> &maps_y) {
+int Map::ClosestWaypoint(double x, double y) {
   double closestLen = 100000; //large number
   int closestWaypoint = 0;
 
-  for(int i = 0; i < maps_x.size(); i++)
-  {
+  for(int i = 0; i < maps_x.size(); i++) {
     double map_x = maps_x[i];
     double map_y = maps_y[i];
     double dist = distance(x,y,map_x,map_y);
-    if(dist < closestLen)
-    {
+    if(dist < closestLen) {
       closestLen = dist;
       closestWaypoint = i;
     }
-
   }
 
   return closestWaypoint;
 }
 
-int NextWaypoint(double x, double y, double theta, const vector<double> &maps_x, const vector<double> &maps_y) {
-  int closestWaypoint = ClosestWaypoint(x,y,maps_x,maps_y);
+int Map::NextWaypoint(double x, double y, double theta) {
+  int closestWaypoint = ClosestWaypoint(x,y);
 
   double map_x = maps_x[closestWaypoint];
   double map_y = maps_y[closestWaypoint];
@@ -111,8 +107,7 @@ int NextWaypoint(double x, double y, double theta, const vector<double> &maps_x,
 
   double angle = abs(theta-heading);
 
-  if(angle > pi()/4)
-  {
+  if(angle > M_PI/4) {
     closestWaypoint++;
   }
 
