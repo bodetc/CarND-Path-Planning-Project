@@ -67,7 +67,9 @@ int main() {
   	map_waypoints_dy.push_back(d_y);
   }
 
-  h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
+  Controller controller(map_waypoints_x, map_waypoints_y, map_waypoints_s);
+
+  h.onMessage([&controller](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -106,8 +108,8 @@ int main() {
 
           	json msgJson;
 
-          Controller controller(map_waypoints_x, map_waypoints_y, map_waypoints_s);
-          Trajectory trajectory = controller.computeTrajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed);
+          Trajectory trajectory = controller.computeTrajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed,
+                                                               previous_path_x, previous_path_y);
 
           	// TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
           	msgJson["next_x"] = trajectory.getX();

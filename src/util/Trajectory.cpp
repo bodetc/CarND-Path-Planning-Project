@@ -23,3 +23,8 @@ void Trajectory::push_back(const std::vector<double> &values) {
   }
   push_back(values[0], values[1]);
 }
+
+void Trajectory::push_all_back(Trajectory trajectory) {
+  a_vals.insert(std::end(a_vals), std::begin(trajectory.a_vals), std::end(trajectory.a_vals));
+  b_vals.insert(std::end(b_vals), std::begin(trajectory.b_vals), std::end(trajectory.b_vals));
+}

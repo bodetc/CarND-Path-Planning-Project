@@ -11,6 +11,8 @@
 // Simulation definitions //
 ////////////////////////////
 
+constexpr int N_LAG = 5; // Timesteps to skip to allow for response lag
+
 constexpr double TIMESTEP = 0.020; // 20 ms
 constexpr int N_STEPS = 50;
 constexpr double HORIZON = TIMESTEP*N_STEPS;

@@ -24,11 +24,13 @@ public:
 
   size_t size() const { return a_vals.size(); }
 
-  std::vector<double> at(int i) const { return {a_vals[i], b_vals[i]}; }
+  std::vector<double> at(unsigned long i) const { return {a_vals[i], b_vals[i]}; }
 
   void push_back(double a, double b);
 
   void push_back(const std::vector<double> &values);
+
+  void push_all_back(Trajectory trajectory);
 };
 
 
