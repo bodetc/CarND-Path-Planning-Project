@@ -15,6 +15,9 @@ public:
   Controller(const std::vector<double> &maps_x, const std::vector<double> &maps_y, const std::vector<double> &maps_s);
 
   Trajectory computeTrajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed);
+
+private:
+  Trajectory keepLane(double car_s, double car_d, double car_speed);
 };
 
 
