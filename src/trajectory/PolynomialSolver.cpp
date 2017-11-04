@@ -36,3 +36,20 @@ Polynomial PolynomialSolver::solveJMT(std::vector<double> start, std::vector<dou
 
   return Polynomial(alphas);
 }
+
+Trajectory
+PolynomialSolver::solveJMT(std::vector<double> start_s, std::vector<double> end_s, std::vector<double> start_d,
+                           std::vector<double> end_d, int N, double timestep) {
+  double T = N*timestep;
+
+  Polynomial s_polynomial = PolynomialSolver::solveJMT(start_s, end_s, T);
+  Polynomial d_polynomial = PolynomialSolver::solveJMT(start_d, end_d, T);
+
+  Trajectory trajectory;
+  for (int i = 1; i <= N; i++) {
+    double s = s_polynomial.evaluate(i * timestep);
+    double d = d_polynomial.evaluate(i * timestep);
+    trajectory.push_back(s, d);
+  }
+  return trajectory;
+}

@@ -30,9 +30,9 @@ public:
   */
   static Polynomial solveJMT(std::vector<double> start, std::vector<double> end, double T);
 
-//  static Trajectory solveJMT(std::vector<double> start_s, std::vector<double> end_s,
-//                             std::vector<double> start_d, std::vector<double> end_d,
-//                             double T, int n);
+  static Trajectory solveJMT(std::vector<double> start_s, std::vector<double> end_s,
+                             std::vector<double> start_d, std::vector<double> end_d,
+                             int N, double timestep);
 };
 
 

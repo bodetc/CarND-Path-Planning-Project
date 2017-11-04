@@ -6,7 +6,6 @@
 #include "Controller.h"
 #include "../definitions.h"
 #include "../utils.h"
-#include "../trajectory/Polynomial.h"
 #include "../trajectory/PolynomialSolver.h"
 
 using namespace std;
@@ -75,16 +74,11 @@ Trajectory Controller::updateStateForLag(const std::vector<double> &previous_pat
 
 Trajectory Controller::keepLane() {
   double distance = TARGET_SPEED * HORIZON;
-  vector<double> start = {0, ego_speed, ego_a};
-  vector<double> end = {distance, TARGET_SPEED, 0};
+  vector<double> start_s = {ego_s, ego_speed, ego_a};
+  vector<double> end_s = {ego_s+distance, TARGET_SPEED, 0};
 
-  Polynomial polynomial = PolynomialSolver::solveJMT(start, end, HORIZON);
+  vector<double> start_d = {ego_d, 0, 0};
+  vector<double> end_d = {6., 0, 0};
 
-  Trajectory trajectory;
-  for (int i = 1; i <= N_STEPS; i++) {
-    double s = ego_s + polynomial.evaluate(i * TIMESTEP);
-    double d = 6.;
-    trajectory.push_back(s, d);
-  }
-  return trajectory;
+  return PolynomialSolver::solveJMT(start_s, end_s, start_d, end_d, N_STEPS, TIMESTEP);
 }
