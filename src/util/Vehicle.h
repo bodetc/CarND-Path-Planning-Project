@@ -19,7 +19,7 @@ public:
   Vehicle(const State startState) : start(startState) {}
   ~Vehicle() = default;
 
-  State stateIn(double T) const;
+  State stateAt(double T) const;
 };
 
 #endif //PATH_PLANNING_VEHICLE_H

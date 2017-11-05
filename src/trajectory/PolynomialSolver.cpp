@@ -12,7 +12,7 @@ using namespace std;
 using Eigen::Matrix3d;
 using Eigen::Vector3d;
 
-Polynomial PolynomialSolver::solveJMT(const std::vector<double>& start, const std::vector<double>& end, double T) {
+Polynomial PolynomialSolver::solveJMT(const std::vector<double> &start, const std::vector<double> &end, double T) {
   if (start.size() != 3 || end.size() != 3) {
     throw std::length_error("start and end vectors must have size 3!");
   }
@@ -39,13 +39,17 @@ Polynomial PolynomialSolver::solveJMT(const std::vector<double>& start, const st
   return Polynomial(alphas);
 }
 
-Trajectory
-PolynomialSolver::solveJMT(const std::vector<double>& start_s, const std::vector<double>& end_s,
-                           const std::vector<double>& start_d, const std::vector<double>& end_d) {
-  double T = N_STEPS*TIMESTEP;
+PolynomialTrajectory PolynomialSolver::solveJMT(const State &start_state, const State &end_state) {
+  double t = end_state.t;
 
-  Polynomial s_polynomial = PolynomialSolver::solveJMT(start_s, end_s, T);
-  Polynomial d_polynomial = PolynomialSolver::solveJMT(start_d, end_d, T);
+  std::vector<double> start_s {start_state.s, start_state.s_dot, start_state.s_ddot};
+  std::vector<double> start_d {start_state.d, start_state.d_dot, start_state.d_ddot};
 
-  return PolynomialTrajectory(s_polynomial, d_polynomial).toTrajectory();
+  std::vector<double> end_s {end_state.s, end_state.s_dot, end_state.s_ddot};
+  std::vector<double> end_d {end_state.d, end_state.d_dot, end_state.d_ddot};
+
+  Polynomial s_polynomial = PolynomialSolver::solveJMT(start_s, end_s, t);
+  Polynomial d_polynomial = PolynomialSolver::solveJMT(start_d, end_d, t);
+
+  return PolynomialTrajectory(s_polynomial, d_polynomial);
 }

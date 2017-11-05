@@ -4,7 +4,7 @@
 
 #include "Vehicle.h"
 
-State Vehicle::stateIn(double t) const {
+State Vehicle::stateAt(double t) const {
   // Implementation of MRUA in s and d direction
   // MRUA = Mouvement Rectiligne Uniformément Accéléré
   return State{
@@ -14,5 +14,6 @@ State Vehicle::stateIn(double t) const {
       .d=start.d+start.d_dot*t+.5*start.d_ddot*t*t,
       .d_dot=start.d_dot+start.d_ddot*t,
       .d_ddot=start.d_ddot,
+      .t=t
   };
 }

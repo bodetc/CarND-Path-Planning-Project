@@ -8,9 +8,10 @@
 #include <vector>
 #include "../util/Polynomial.h"
 #include "../util/Trajectory.h"
+#include "../util/PolynomialTrajectory.h"
 
 class PolynomialSolver {
-public:
+private:
 
   /*
     Calculate the Jerk Minimizing Trajectory that connects the initial state
@@ -30,8 +31,9 @@ public:
   */
   static Polynomial solveJMT(const std::vector<double>& start, const std::vector<double>& end, double T);
 
-  static Trajectory solveJMT(const std::vector<double>& start_s, const std::vector<double>& end_s,
-                             const std::vector<double>& start_d, const std::vector<double>& end_d);
+public:
+
+  static PolynomialTrajectory solveJMT(const State& start_state, const State& end_state);
 };
 
 

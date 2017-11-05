@@ -34,5 +34,15 @@ constexpr double TARGET_SPEED = TARGET_MPH*MPH_TO_METERS_PER_SECOND;
 ///////////////////
 
 constexpr double TIME_DIFF_COST = 1;
+constexpr int PTG_N_STEPS = 4;
+constexpr double PTG_TIMESTEP = 0.5;
+constexpr int PTG_N_SAMPLES = 10;
+
+constexpr double PTG_SIGMA_S = 10.;
+constexpr double PTG_SIGMA_S_DOT = 4.;
+constexpr double PTG_SIGMA_S_DDOT = 2.;
+constexpr double PTG_SIGMA_D = 1.;
+constexpr double PTG_SIGMA_D_DOT = 1.;
+constexpr double PTG_SIGMA_D_DDOT = 1.;
 
 #endif //PATH_PLANNING_DEFINITIONS_H

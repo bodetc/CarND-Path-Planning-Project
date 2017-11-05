@@ -7,14 +7,12 @@
 
 #include "../util/Trajectory.h"
 #include "../util/Map.h"
+#include "../util/State.h"
+#include "../trajectory/PTG.h"
 
 class Controller {
   const Map map;
-
-  double ego_speed;
-  double ego_a;
-  double ego_s;
-  double ego_d;
+  const PTG ptg;
 
   Trajectory previous_trajectory;
 
@@ -25,9 +23,10 @@ public:
     const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y);
 
 private:
-  Trajectory updateStateForLag(const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y);
+  Trajectory updateStateForLag(State& start_state, const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y);
+  State updateState(const Trajectory& previous_trajectory, unsigned long current);
 
-  Trajectory keepLane();
+  Trajectory keepLane(const State& start_state);
 };
 
 

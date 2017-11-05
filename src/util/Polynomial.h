@@ -13,6 +13,7 @@ private:
   std::vector<double> alphas;
 
 public:
+  explicit Polynomial() = default;
   explicit Polynomial(const std::vector<double> &alphas) : alphas(alphas) {}
 
   double evaluate(double t) const;

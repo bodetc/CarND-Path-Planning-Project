@@ -6,15 +6,21 @@
 #define PATH_PLANNING_PTG_H
 
 
+#include <random>
 #include "CostCalculator.h"
 #include "../util/Vehicle.h"
 
 class PTG {
 private:
+  std::default_random_engine generator;
+  std::normal_distribution<double> distribution;
+
   CostCalculator costCalculator;
 
+  const State perturbGoal(const State &goal);
+
 public:
-  Trajectory operator()(State start_state, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions);
+  Trajectory operator()(const State& start_state, const Vehicle& target, const State& delta, double T, const std::vector<Vehicle>& predictions);
 };
 
 

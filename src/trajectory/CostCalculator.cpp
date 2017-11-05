@@ -6,7 +6,7 @@
 #include "../definitions.h"
 
 class TimeCost : public AbstractCostFunction {
-  double calculateCost(const PolynomialTrajectory& ego, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions) override {
+  double calculateCost(double t, const PolynomialTrajectory& ego, const Vehicle& target, const State& delta, double T, const std::vector<Vehicle>& predictions) {
     return 1.;
   }
 };
@@ -24,10 +24,10 @@ CostCalculator::~CostCalculator() {
   weightedCostFunctions.clear();
 }
 
-double CostCalculator::calculateCost(const PolynomialTrajectory& ego, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions) override {
+double CostCalculator::calculateCost(double t, const PolynomialTrajectory& ego, const Vehicle& target, const State& delta, double T, const std::vector<Vehicle>& predictions) {
   double totalCost = 0;
   for (auto &wcf : weightedCostFunctions) {
-    totalCost += wcf.weight * wcf.costFunction->calculateCost(ego, target_vehicle, delta, T, predictions);
+    totalCost += wcf.weight * wcf.costFunction->calculateCost(t, ego, target, delta, T, predictions);
   }
   return totalCost;
 }

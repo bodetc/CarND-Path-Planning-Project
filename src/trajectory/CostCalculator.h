@@ -13,7 +13,7 @@
 class AbstractCostFunction {
 public:
   virtual ~AbstractCostFunction() = default;
-  virtual double calculateCost(const PolynomialTrajectory& ego, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions) = 0;
+  virtual double calculateCost(double t, const PolynomialTrajectory& ego, const Vehicle& target, const State& delta, double T, const std::vector<Vehicle>& predictions) = 0;
 };
 
 struct WeightedCostFunction {
@@ -29,7 +29,7 @@ public:
   CostCalculator();
   ~CostCalculator() override;
 
-  double calculateCost(const PolynomialTrajectory& ego, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions) override;
+  double calculateCost(double t, const PolynomialTrajectory& ego, const Vehicle& target, const State& delta, double T, const std::vector<Vehicle>& predictions) override;
 };
 
 

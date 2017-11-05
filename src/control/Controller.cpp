@@ -10,7 +10,6 @@
 
 using namespace std;
 
-
 Controller::Controller(const vector<double> &maps_x, const vector<double> &maps_y, const vector<double> &maps_s) :
     map(maps_x, maps_y, maps_s) {}
 
@@ -18,30 +17,34 @@ Controller::Controller(const vector<double> &maps_x, const vector<double> &maps_
 Trajectory
 Controller::computeTrajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
                               const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y) {
-  ego_speed = car_speed;
-  ego_a = 0.;
-  ego_s = car_s;
-  ego_d = car_d;
+  State start_state {
+      .s = car_s,
+      .s_dot = car_speed,
+      .s_ddot = 0,
+      .d = car_d,
+      .d_dot = 0,
+      .d_ddot = 0,
+      .t = 0
+  };
 
-  Trajectory lagTrajectory = updateStateForLag(previous_path_x, previous_path_y);
+  Trajectory lagTrajectory = updateStateForLag(start_state, previous_path_x, previous_path_y);
 
-  cout << "Ego=(" << ego_s << ", " << ego_d << ")" << endl;
+  cout << "Ego=(" << start_state.s << ", " << start_state.d << ")" << endl;
 
-  Trajectory newTrajectory = keepLane();
+  Trajectory newTrajectory = keepLane(start_state);
 
   previous_trajectory = lagTrajectory;
   previous_trajectory.push_all_back(newTrajectory);
   return map.getXYspline(previous_trajectory);
 }
 
-Trajectory Controller::updateStateForLag(const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y) {
+Trajectory Controller::updateStateForLag(State& start_state, const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y) {
   Trajectory trajectory;
 
   // Do nothing if not enough steps are present
   if (previous_path_x.size() >= N_LAG && previous_path_x.size() >= N_LAG) {
     // Calculate number of steps elapsed
     unsigned long elapsed = previous_trajectory.size() - previous_path_x.size();
-    unsigned long current = elapsed+N_LAG-1;
 
     cout << "Elapsed: " << elapsed << endl;
 
@@ -50,35 +53,53 @@ Trajectory Controller::updateStateForLag(const std::vector<double> &previous_pat
       trajectory.push_back(previous_trajectory.at(elapsed+i));
     }
 
-    // Now update the car parameters
-
-    // "Current" Frenet coordinates
-    auto ego_sd = previous_trajectory.at(current);
-    ego_s = ego_sd[0];
-    ego_d = ego_sd[1];
-
-    // "Current" and previous positions
-    auto previous_sd = previous_trajectory.at(current-1);
-    auto ante_sd = previous_trajectory.at(current-2);
-
-    // "Current" and previous speed
-    ego_speed = distance(ego_sd, previous_sd) / TIMESTEP;
-    double previous_speed = distance(previous_sd, ante_sd) / TIMESTEP;
-
-    // "Current" acceleration
-    ego_a = (ego_speed - previous_speed) / TIMESTEP;
+    // Now update the car state
+    unsigned long current = elapsed+N_LAG-1;
+    start_state = updateState(previous_trajectory, current);
   }
 
   return trajectory;
 }
 
-Trajectory Controller::keepLane() {
-  double distance = TARGET_SPEED * HORIZON;
-  vector<double> start_s = {ego_s, ego_speed, ego_a};
-  vector<double> end_s = {ego_s+distance, TARGET_SPEED, 0};
+State Controller::updateState(const Trajectory &previous_trajectory, unsigned long current) {
+  auto current_pos = previous_trajectory.at(current);
+  auto previous_pos = previous_trajectory.at(current-1);
+  auto ante_pos = previous_trajectory.at(current-2);
 
-  vector<double> start_d = {ego_d, 0, 0};
-  vector<double> end_d = {6., 0, 0};
+  double current_s = current_pos[0];
+  double current_d = current_pos[1];
 
-  return PolynomialSolver::solveJMT(start_s, end_s, start_d, end_d);
+  double current_s_dot = (current_pos[0]-previous_pos[0]) / TIMESTEP;
+  double current_d_dot = (current_pos[1]-previous_pos[1]) / TIMESTEP;
+
+  double previous_s_dot = (previous_pos[0]-ante_pos[0]) / TIMESTEP;
+  double previous_d_dot = (previous_pos[1]-ante_pos[1]) / TIMESTEP;
+
+  return State {
+      // Current position
+      .s = current_s,
+      .d = current_d,
+
+      // Current speed
+      .s_dot = current_s_dot,
+      .d_dot = current_d_dot,
+
+      // Current acceleration
+      .s_ddot = (current_s_dot-previous_s_dot) / TIMESTEP,
+      .d_ddot = (current_d_dot-previous_d_dot) / TIMESTEP,
+  };
+}
+
+Trajectory Controller::keepLane(const State &start_state) {
+  State target_state {
+      .s = start_state.s,
+      .s_dot = TARGET_SPEED,
+      .d = 6.,
+  };
+  Vehicle target(target_state);
+  State delta{};
+  double T = HORIZON;
+  std::vector<Vehicle> predictions;
+
+  return PolynomialSolver::solveJMT(start_state, target.stateAt(T)).toTrajectory();
 }

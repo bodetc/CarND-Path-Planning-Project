@@ -22,6 +22,8 @@ private:
   Polynomial d_ddot;
 
 public:
+  PolynomialTrajectory() = default;
+
   PolynomialTrajectory(Polynomial s_, Polynomial d_) :
       s(std::move(s_)),
       s_dot(s.derivative()),
@@ -29,6 +31,9 @@ public:
       d(std::move(d_)),
       d_dot(d.derivative()),
       d_ddot(d_dot.derivative()) {};
+
+  PolynomialTrajectory(const PolynomialTrajectory& other) = default;
+  PolynomialTrajectory& operator=(const PolynomialTrajectory& other) = default;
 
   State stateAt(double t);
 
