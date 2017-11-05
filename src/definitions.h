@@ -29,4 +29,10 @@ constexpr double TARGET_MPH = 45;
 constexpr double MAX_SPEED = MAX_MPH*MPH_TO_METERS_PER_SECOND;
 constexpr double TARGET_SPEED = TARGET_MPH*MPH_TO_METERS_PER_SECOND;
 
+///////////////////
+// Costs for PTG //
+///////////////////
+
+constexpr double TIME_DIFF_COST = 1;
+
 #endif //PATH_PLANNING_DEFINITIONS_H

@@ -22,4 +22,14 @@ inline double distance(std::vector<double> a, std::vector<double> b) {
   return sqrt((b[0]-a[0])*(b[0]-a[0])+(b[1]-a[1])*(b[1]-a[1])); 
 }
 
+/**
+ * A function that returns a value between 0 and 1 for x in the
+ * range [0, infinity] and -1 to 1 for x in the range [-infinity, infinity].
+ *
+ * Useful for cost functions.
+ */
+inline double logistic(double x) {
+  return 2. / (1. + exp(-x)) - 1.;
+}
+
 #endif //PATH_PLANNING_UTILS_H

@@ -80,5 +80,5 @@ Trajectory Controller::keepLane() {
   vector<double> start_d = {ego_d, 0, 0};
   vector<double> end_d = {6., 0, 0};
 
-  return PolynomialSolver::solveJMT(start_s, end_s, start_d, end_d, N_STEPS, TIMESTEP);
+  return PolynomialSolver::solveJMT(start_s, end_s, start_d, end_d);
 }

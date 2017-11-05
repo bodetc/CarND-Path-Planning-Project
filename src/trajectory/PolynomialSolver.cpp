@@ -5,12 +5,14 @@
 #include "PolynomialSolver.h"
 
 #include "../Eigen-3.3/Eigen/Dense"
+#include "../util/PolynomialTrajectory.h"
+#include "../definitions.h"
 
 using namespace std;
 using Eigen::Matrix3d;
 using Eigen::Vector3d;
 
-Polynomial PolynomialSolver::solveJMT(std::vector<double> start, std::vector<double> end, double T) {
+Polynomial PolynomialSolver::solveJMT(const std::vector<double>& start, const std::vector<double>& end, double T) {
   if (start.size() != 3 || end.size() != 3) {
     throw std::length_error("start and end vectors must have size 3!");
   }
@@ -38,18 +40,12 @@ Polynomial PolynomialSolver::solveJMT(std::vector<double> start, std::vector<dou
 }
 
 Trajectory
-PolynomialSolver::solveJMT(std::vector<double> start_s, std::vector<double> end_s, std::vector<double> start_d,
-                           std::vector<double> end_d, int N, double timestep) {
-  double T = N*timestep;
+PolynomialSolver::solveJMT(const std::vector<double>& start_s, const std::vector<double>& end_s,
+                           const std::vector<double>& start_d, const std::vector<double>& end_d) {
+  double T = N_STEPS*TIMESTEP;
 
   Polynomial s_polynomial = PolynomialSolver::solveJMT(start_s, end_s, T);
   Polynomial d_polynomial = PolynomialSolver::solveJMT(start_d, end_d, T);
 
-  Trajectory trajectory;
-  for (int i = 1; i <= N; i++) {
-    double s = s_polynomial.evaluate(i * timestep);
-    double d = d_polynomial.evaluate(i * timestep);
-    trajectory.push_back(s, d);
-  }
-  return trajectory;
+  return PolynomialTrajectory(s_polynomial, d_polynomial).toTrajectory();
 }

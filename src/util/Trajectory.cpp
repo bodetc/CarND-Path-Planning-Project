@@ -4,12 +4,10 @@
 
 #include "Trajectory.h"
 
-Trajectory::Trajectory(const std::vector<double> &a, const std::vector<double> &b) {
+Trajectory::Trajectory(const std::vector<double> &a, const std::vector<double> &b) : a_vals(a), b_vals(b) {
   if (a.size() != b.size()) {
     throw std::length_error("Both vector must have same length!");
   }
-  a_vals = a;
-  b_vals = b;
 }
 
 void Trajectory::push_back(double a, double b) {

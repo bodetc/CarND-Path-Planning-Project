@@ -6,7 +6,7 @@
 #define PATH_PLANNING_POLYNOMIALSOLVER_H
 
 #include <vector>
-#include "Polynomial.h"
+#include "../util/Polynomial.h"
 #include "../util/Trajectory.h"
 
 class PolynomialSolver {
@@ -28,11 +28,10 @@ public:
       > JMT( [0, 10, 0], [10, 10, 0], 1)
       [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
   */
-  static Polynomial solveJMT(std::vector<double> start, std::vector<double> end, double T);
+  static Polynomial solveJMT(const std::vector<double>& start, const std::vector<double>& end, double T);
 
-  static Trajectory solveJMT(std::vector<double> start_s, std::vector<double> end_s,
-                             std::vector<double> start_d, std::vector<double> end_d,
-                             int N, double timestep);
+  static Trajectory solveJMT(const std::vector<double>& start_s, const std::vector<double>& end_s,
+                             const std::vector<double>& start_d, const std::vector<double>& end_d);
 };
 
 
