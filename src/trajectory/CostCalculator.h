@@ -5,25 +5,31 @@
 #ifndef PATH_PLANNING_COSTCALCULATOR_H
 #define PATH_PLANNING_COSTCALCULATOR_H
 
+#include "../util/State.h"
+#include "../util/Vehicle.h"
 #include "../util/Trajectory.h"
+#include "../util/PolynomialTrajectory.h"
 
 class AbstractCostFunction {
 public:
   virtual ~AbstractCostFunction() = default;
-  virtual double operator()(const Trajectory& ego, double T) = 0;
+  virtual double calculateCost(const PolynomialTrajectory& ego, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions) = 0;
 };
 
+struct WeightedCostFunction {
+  double weight;
+  AbstractCostFunction* costFunction;
+};
 
-class CostCalculator {
+class CostCalculator : AbstractCostFunction {
 private:
-  std::vector<AbstractCostFunction*> costFunctions;
-  std::vector<double> weights;
+  std::vector<WeightedCostFunction> weightedCostFunctions;
 
 public:
   CostCalculator();
-  ~CostCalculator();
+  ~CostCalculator() override;
 
-  double operator()(const Trajectory& ego, double T);
+  double calculateCost(const PolynomialTrajectory& ego, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions) override;
 };
 
 

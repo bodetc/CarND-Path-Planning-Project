@@ -6,33 +6,28 @@
 #include "../definitions.h"
 
 class TimeCost : public AbstractCostFunction {
-  double operator()(const Trajectory& ego, double T) override {
+  double calculateCost(const PolynomialTrajectory& ego, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions) override {
     return 1.;
   }
 };
 
 CostCalculator::CostCalculator() {
-  weights.push_back(TIME_DIFF_COST);
-  costFunctions.push_back(new TimeCost());
+  weightedCostFunctions.push_back(WeightedCostFunction { .weight = TIME_DIFF_COST, .costFunction = new TimeCost()});
 }
 
 CostCalculator::~CostCalculator() {
   // free the allocated memory
-  for (auto &costFunction : costFunctions) {
-    delete costFunction;
+  for (auto &wcf : weightedCostFunctions) {
+    delete wcf.costFunction;
   }
   // empty the container
-  costFunctions.clear();
+  weightedCostFunctions.clear();
 }
 
-double CostCalculator::operator()(const Trajectory &ego, double T) {
-  if(costFunctions.size()!=weights.size()) {
-    throw std::length_error("Cost functions and weights must have the same size!");
-  }
+double CostCalculator::calculateCost(const PolynomialTrajectory& ego, int target_vehicle, const State& delta, double T, const std::vector<Vehicle>& predictions) override {
   double totalCost = 0;
-  for(int i = 0; i<costFunctions.size(); i++) {
-    auto costFunction = costFunctions[i];
-    totalCost += weights[i] * (*costFunction)(ego, T);
+  for (auto &wcf : weightedCostFunctions) {
+    totalCost += wcf.weight * wcf.costFunction->calculateCost(ego, target_vehicle, delta, T, predictions);
   }
   return totalCost;
 }
