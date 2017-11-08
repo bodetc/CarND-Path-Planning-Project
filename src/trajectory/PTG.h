@@ -15,12 +15,12 @@ private:
   std::default_random_engine generator;
   std::normal_distribution<double> distribution;
 
-  CostCalculator costCalculator;
+  CostCalculator cost_calculator;
 
-  const State perturbGoal(const State &goal);
+  const State perturb_goal(const State &goal);
 
 public:
-  Trajectory operator()(const State& start_state, const Vehicle& target, const State& delta, double T, const std::vector<Vehicle>& predictions);
+  const Trajectory operator()(const State& start_state, const Vehicle& target, const State& delta, double T, const std::vector<Vehicle>& predictions);
 };
 
 

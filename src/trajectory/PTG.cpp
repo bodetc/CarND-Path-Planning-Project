@@ -9,36 +9,36 @@
 
 using namespace std;
 
-Trajectory PTG::operator()(const State& start_state, const Vehicle& target, const State &delta, double T,
+const Trajectory PTG::operator()(const State& start_state, const Vehicle& target, const State &delta, double T,
                            const vector<Vehicle> &predictions) {
-  vector<State> allGoals((2 * PTG_N_STEPS + 1) * (PTG_N_SAMPLES + 1));
+  vector<State> all_goals((2 * PTG_N_STEPS + 1) * (PTG_N_SAMPLES + 1));
 
   for (int i = -PTG_N_STEPS; i <= PTG_N_STEPS; i++) {
     double t = T + i * PTG_N_STEPS;
     State goal = target.stateAt(t) + delta;
 
-    allGoals.push_back(goal);
+    all_goals.push_back(goal);
 
     for (int j = 0; j < PTG_N_SAMPLES; j++) {
-      allGoals.push_back(perturbGoal(goal));
+      all_goals.push_back(perturb_goal(goal));
     }
   }
 
-  PolynomialTrajectory bestTrajectory;
-  double bestCost = std::numeric_limits<double>::max();
-  for(auto goal : allGoals) {
-    PolynomialTrajectory trajectory = PolynomialSolver::solveJMT(start_state, goal);
-    double cost = costCalculator.calculateCost(goal.t, trajectory, target, delta, T, predictions);
-    if(cost < bestCost) {
-      bestTrajectory=trajectory;
-      bestCost = cost;
+  PolynomialTrajectory best_trajectory;
+  double best_cost = std::numeric_limits<double>::max();
+  for(auto goal : all_goals) {
+    PolynomialTrajectory trajectory = PolynomialSolver::solve_JMT(start_state, goal);
+    double cost = cost_calculator.calculate_cost(goal.t, trajectory, target, delta, T, predictions);
+    if(cost < best_cost) {
+      best_trajectory=trajectory;
+      best_cost = cost;
     }
   }
 
-  return bestTrajectory.toTrajectory();
+  return best_trajectory.toTrajectory();
 }
 
-const State PTG::perturbGoal(const State &other) {
+const State PTG::perturb_goal(const State &other) {
   return State {
       .s = other.s + PTG_SIGMA_S * distribution(generator),
       .s_dot = other.s_dot + PTG_SIGMA_S_DOT * distribution(generator),

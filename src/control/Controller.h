@@ -12,21 +12,26 @@
 
 class Controller {
   const Map map;
-  const PTG ptg;
+  PTG ptg;
 
   Trajectory previous_trajectory;
 
 public:
   Controller(const std::vector<double> &maps_x, const std::vector<double> &maps_y, const std::vector<double> &maps_s);
 
-  Trajectory computeTrajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
-    const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y);
+  const Trajectory compute_trajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw,
+                                      double car_speed,
+                                      const std::vector<double> &previous_path_x,
+                                      const std::vector<double> &previous_path_y);
 
 private:
-  Trajectory updateStateForLag(State& start_state, const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y);
-  State updateState(const Trajectory& previous_trajectory, unsigned long current);
+  const Trajectory update_state_for_lag(State &start_state,
+                                        const std::vector<double> &previous_path_x,
+                                        const std::vector<double> &previous_path_y);
 
-  Trajectory keepLane(const State& start_state);
+  const State get_state_from_trajectory(const Trajectory &previous_trajectory, unsigned long current);
+
+  const Trajectory keep_lane(const State &start_state);
 };
 
 

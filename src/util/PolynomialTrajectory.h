@@ -23,21 +23,13 @@ private:
 
 public:
   PolynomialTrajectory() = default;
-
-  PolynomialTrajectory(Polynomial s_, Polynomial d_) :
-      s(std::move(s_)),
-      s_dot(s.derivative()),
-      s_ddot(s_dot.derivative()),
-      d(std::move(d_)),
-      d_dot(d.derivative()),
-      d_ddot(d_dot.derivative()) {};
+  PolynomialTrajectory(Polynomial s_, Polynomial d_);
 
   PolynomialTrajectory(const PolynomialTrajectory& other) = default;
   PolynomialTrajectory& operator=(const PolynomialTrajectory& other) = default;
 
-  State stateAt(double t);
-
-  Trajectory toTrajectory();
+  const State stateAt(double t) const;
+  const Trajectory toTrajectory() const;
 };
 
 

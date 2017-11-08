@@ -29,11 +29,11 @@ private:
       > JMT( [0, 10, 0], [10, 10, 0], 1)
       [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
   */
-  static Polynomial solveJMT(const std::vector<double>& start, const std::vector<double>& end, double T);
+  static const Polynomial solve_JMT(const std::vector<double> &start, const std::vector<double> &end, double T);
 
 public:
 
-  static PolynomialTrajectory solveJMT(const State& start_state, const State& end_state);
+  static const PolynomialTrajectory solve_JMT(const State &start_state, const State &end_state);
 };
 
 

@@ -5,14 +5,13 @@
 #include "PolynomialSolver.h"
 
 #include "../Eigen-3.3/Eigen/Dense"
-#include "../util/PolynomialTrajectory.h"
-#include "../definitions.h"
 
 using namespace std;
 using Eigen::Matrix3d;
 using Eigen::Vector3d;
 
-Polynomial PolynomialSolver::solveJMT(const std::vector<double> &start, const std::vector<double> &end, double T) {
+const Polynomial
+PolynomialSolver::solve_JMT(const std::vector<double> &start, const std::vector<double> &end, double T) {
   if (start.size() != 3 || end.size() != 3) {
     throw std::length_error("start and end vectors must have size 3!");
   }
@@ -39,17 +38,17 @@ Polynomial PolynomialSolver::solveJMT(const std::vector<double> &start, const st
   return Polynomial(alphas);
 }
 
-PolynomialTrajectory PolynomialSolver::solveJMT(const State &start_state, const State &end_state) {
+const PolynomialTrajectory PolynomialSolver::solve_JMT(const State &start_state, const State &end_state) {
   double t = end_state.t;
 
-  std::vector<double> start_s {start_state.s, start_state.s_dot, start_state.s_ddot};
-  std::vector<double> start_d {start_state.d, start_state.d_dot, start_state.d_ddot};
+  std::vector<double> start_s{start_state.s, start_state.s_dot, start_state.s_ddot};
+  std::vector<double> start_d{start_state.d, start_state.d_dot, start_state.d_ddot};
 
-  std::vector<double> end_s {end_state.s, end_state.s_dot, end_state.s_ddot};
-  std::vector<double> end_d {end_state.d, end_state.d_dot, end_state.d_ddot};
+  std::vector<double> end_s{end_state.s, end_state.s_dot, end_state.s_ddot};
+  std::vector<double> end_d{end_state.d, end_state.d_dot, end_state.d_ddot};
 
-  Polynomial s_polynomial = PolynomialSolver::solveJMT(start_s, end_s, t);
-  Polynomial d_polynomial = PolynomialSolver::solveJMT(start_d, end_d, t);
+  Polynomial s_polynomial = PolynomialSolver::solve_JMT(start_s, end_s, t);
+  Polynomial d_polynomial = PolynomialSolver::solve_JMT(start_d, end_d, t);
 
   return PolynomialTrajectory(s_polynomial, d_polynomial);
 }

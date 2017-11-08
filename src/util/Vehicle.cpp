@@ -4,7 +4,9 @@
 
 #include "Vehicle.h"
 
-State Vehicle::stateAt(double t) const {
+Vehicle::Vehicle(const State& startState) : start(startState) {}
+
+const State Vehicle::stateAt(double t) const {
   // Implementation of MRUA in s and d direction
   // MRUA = Mouvement Rectiligne Uniformément Accéléré
   return State{

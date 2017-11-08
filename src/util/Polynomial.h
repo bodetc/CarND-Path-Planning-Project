@@ -6,6 +6,7 @@
 #define PATH_PLANNING_POLYNOMIAL_H
 
 
+#include <utility>
 #include <vector>
 
 class Polynomial {
@@ -14,10 +15,11 @@ private:
 
 public:
   explicit Polynomial() = default;
-  explicit Polynomial(const std::vector<double> &alphas) : alphas(alphas) {}
+  explicit Polynomial(std::vector<double> alphas);
 
   double evaluate(double t) const;
-  Polynomial derivative() const;
+
+  const Polynomial derivative() const;
 };
 
 

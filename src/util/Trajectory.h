@@ -14,20 +14,17 @@ private:
   std::vector<double> b_vals;
 
 public:
+  Trajectory() = default;
   Trajectory(const std::vector<double> &a, const std::vector<double> &b);
 
-  Trajectory() = default;
-
   const std::vector<double> &getX() const { return a_vals; }
-
   const std::vector<double> &getY() const { return b_vals; }
 
   size_t size() const { return a_vals.size(); }
 
-  std::vector<double> at(unsigned long i) const { return {a_vals[i], b_vals[i]}; }
+  const std::vector<double> at(unsigned long i) const { return {a_vals[i], b_vals[i]}; }
 
   void push_back(double a, double b);
-
   void push_back(const std::vector<double> &values);
 
   void push_all_back(Trajectory trajectory);

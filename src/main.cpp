@@ -108,8 +108,8 @@ int main() {
 
           	json msgJson;
 
-          Trajectory trajectory = controller.computeTrajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed,
-                                                               previous_path_x, previous_path_y);
+          Trajectory trajectory = controller.compute_trajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed,
+                                                                previous_path_x, previous_path_y);
 
           	// TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
           	msgJson["next_x"] = trajectory.getX();

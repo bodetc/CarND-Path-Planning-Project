@@ -13,13 +13,13 @@
  */
 class Vehicle {
 private:
-  State start;
+  const State start;
 
 public:
-  Vehicle(const State startState) : start(startState) {}
+  explicit Vehicle(const State& startState);
   ~Vehicle() = default;
 
-  State stateAt(double T) const;
+  const State stateAt(double T) const;
 };
 
 #endif //PATH_PLANNING_VEHICLE_H

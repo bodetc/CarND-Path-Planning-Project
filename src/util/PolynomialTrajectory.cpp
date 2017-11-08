@@ -5,7 +5,15 @@
 #include "PolynomialTrajectory.h"
 #include "../definitions.h"
 
-State PolynomialTrajectory::stateAt(double t) {
+PolynomialTrajectory::PolynomialTrajectory(Polynomial s_, Polynomial d_) :
+    s(std::move(s_)),
+    s_dot(s.derivative()),
+    s_ddot(s_dot.derivative()),
+    d(std::move(d_)),
+    d_dot(d.derivative()),
+    d_ddot(d_dot.derivative()) {};
+
+const State PolynomialTrajectory::stateAt(double t) const {
   return State {
       .s = s.evaluate(t),
       .s_dot = s_dot.evaluate(t),
@@ -16,7 +24,7 @@ State PolynomialTrajectory::stateAt(double t) {
   };
 }
 
-Trajectory PolynomialTrajectory::toTrajectory() {
+const Trajectory PolynomialTrajectory::toTrajectory() const {
   Trajectory trajectory;
   for (int i = 1; i <= N_STEPS; i++) {
     double s_ = s.evaluate(i * TIMESTEP);
