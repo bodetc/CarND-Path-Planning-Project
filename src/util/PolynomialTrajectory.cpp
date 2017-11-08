@@ -5,13 +5,14 @@
 #include "PolynomialTrajectory.h"
 #include "../definitions.h"
 
-PolynomialTrajectory::PolynomialTrajectory(Polynomial s_, Polynomial d_) :
+PolynomialTrajectory::PolynomialTrajectory(Polynomial s_, Polynomial d_, double t_) :
     s(std::move(s_)),
     s_dot(s.derivative()),
     s_ddot(s_dot.derivative()),
     d(std::move(d_)),
     d_dot(d.derivative()),
-    d_ddot(d_dot.derivative()) {};
+    d_ddot(d_dot.derivative()),
+    t_max(t_) {};
 
 const State PolynomialTrajectory::stateAt(double t) const {
   return State {

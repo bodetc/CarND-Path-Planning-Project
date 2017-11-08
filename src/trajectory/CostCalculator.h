@@ -15,7 +15,7 @@ public:
   virtual ~AbstractCostFunction() = default;
 
   virtual double
-  calculate_cost(double t, const PolynomialTrajectory &ego, const Vehicle &target, const State &delta, double T,
+  calculate_cost(const PolynomialTrajectory &ego, const Vehicle &target, const State &delta, double T,
                  const std::vector<Vehicle> &predictions) = 0;
 };
 
@@ -33,7 +33,7 @@ public:
 
   ~CostCalculator() override;
 
-  double calculate_cost(double t, const PolynomialTrajectory &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const PolynomialTrajectory &ego, const Vehicle &target, const State &delta, double T,
                         const std::vector<Vehicle> &predictions) override;
 };
 

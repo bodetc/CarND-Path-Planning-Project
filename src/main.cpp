@@ -30,6 +30,29 @@ string hasData(string s) {
   return "";
 }
 
+const vector<Vehicle> getPredictions(const json& sensor_fusion) {
+  vector<Vehicle> predictions;
+  for(auto element : sensor_fusion) {
+    // int id = element[0];
+    // double x = element[1];
+    // double y = element[2];
+    double vx = element[3];
+    double vy = element[4];
+    double s = element[5];
+    double d = element[6];
+    double speed = sqrt(vx*vx+vy*vy);
+
+    State start_state{
+        .s = s,
+        .s_dot = speed,
+        .d = d,
+    };
+
+    predictions.emplace_back(start_state);
+  }
+  return predictions;
+}
+
 int main() {
   uWS::Hub h;
 
@@ -106,12 +129,13 @@ int main() {
           	// Sensor Fusion Data, a list of all other cars on the same side of the road.
           	auto sensor_fusion = j[1]["sensor_fusion"];
 
-          	json msgJson;
 
+          vector<Vehicle> predictions = getPredictions(sensor_fusion);
           Trajectory trajectory = controller.compute_trajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed,
-                                                                previous_path_x, previous_path_y);
+                                                                previous_path_x, previous_path_y,
+                                                                predictions);
 
-          	// TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
+          	json msgJson;
           	msgJson["next_x"] = trajectory.getX();
           	msgJson["next_y"] = trajectory.getY();
 

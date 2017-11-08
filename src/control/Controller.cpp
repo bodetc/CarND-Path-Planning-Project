@@ -16,7 +16,8 @@ Controller::Controller(const vector<double> &maps_x, const vector<double> &maps_
 
 const Trajectory
 Controller::compute_trajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
-                               const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y) {
+                               const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y,
+                               const std::vector<Vehicle>& predictions) {
   State start_state{
       .s = car_s,
       .s_dot = car_speed,
@@ -31,7 +32,7 @@ Controller::compute_trajectory(double car_x, double car_y, double car_s, double 
 
   cout << "Ego=(" << start_state.s << ", " << start_state.d << ")" << endl;
 
-  Trajectory new_trajectory = keep_lane(start_state);
+  Trajectory new_trajectory = keep_lane(start_state, predictions);
 
   previous_trajectory = lag_trajectory;
   previous_trajectory.push_all_back(new_trajectory);
@@ -93,7 +94,7 @@ const State Controller::get_state_from_trajectory(const Trajectory &previous_tra
   };
 }
 
-const Trajectory Controller::keep_lane(const State &start_state) {
+const Trajectory Controller::keep_lane(State start_state, const std::vector<Vehicle>& predictions) {
   State target_state{
       .s = start_state.s,
       .s_dot = TARGET_SPEED,
@@ -102,7 +103,6 @@ const Trajectory Controller::keep_lane(const State &start_state) {
   Vehicle target(target_state);
   State delta{};
   double T = HORIZON;
-  std::vector<Vehicle> predictions;
 
   return ptg(start_state, target, delta, T, predictions);
 }

@@ -30,7 +30,7 @@ const Trajectory PTG::operator()(const State& start_state, const Vehicle& target
   double best_cost = std::numeric_limits<double>::max();
   for(auto goal : all_goals) {
     PolynomialTrajectory trajectory = PolynomialSolver::solve_JMT(start_state, goal);
-    double cost = cost_calculator.calculate_cost(goal.t, trajectory, target, delta, T, predictions);
+    double cost = cost_calculator.calculate_cost(trajectory, target, delta, T, predictions);
     if(cost < best_cost) {
       best_trajectory=trajectory;
       best_cost = cost;

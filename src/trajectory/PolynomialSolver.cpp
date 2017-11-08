@@ -50,5 +50,5 @@ const PolynomialTrajectory PolynomialSolver::solve_JMT(const State &start_state,
   Polynomial s_polynomial = PolynomialSolver::solve_JMT(start_s, end_s, t);
   Polynomial d_polynomial = PolynomialSolver::solve_JMT(start_d, end_d, t);
 
-  return PolynomialTrajectory(s_polynomial, d_polynomial);
+  return PolynomialTrajectory(s_polynomial, d_polynomial, end_state.t);
 }

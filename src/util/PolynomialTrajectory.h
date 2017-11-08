@@ -20,16 +20,20 @@ private:
   Polynomial d;
   Polynomial d_dot;
   Polynomial d_ddot;
+  double t_max;
 
 public:
   PolynomialTrajectory() = default;
-  PolynomialTrajectory(Polynomial s_, Polynomial d_);
+  PolynomialTrajectory(Polynomial s_, Polynomial d_, double t_max);
 
   PolynomialTrajectory(const PolynomialTrajectory& other) = default;
   PolynomialTrajectory& operator=(const PolynomialTrajectory& other) = default;
 
   const State stateAt(double t) const;
   const Trajectory toTrajectory() const;
+
+  const State get_destination() const { return stateAt(t_max); }
+  const double get_destination_time() const { return t_max; }
 };
 
 
