@@ -35,7 +35,7 @@ constexpr double TARGET_SPEED = TARGET_MPH*MPH_TO_METERS_PER_SECOND;
 
 constexpr double TIME_DIFF_COST = 1;
 constexpr int PTG_N_STEPS = 4;
-constexpr double PTG_TIMESTEP = 0.5;
+constexpr double PTG_TIMESTEP = 0.040;
 constexpr int PTG_N_SAMPLES = 10;
 
 constexpr double PTG_SIGMA_S = 10.;

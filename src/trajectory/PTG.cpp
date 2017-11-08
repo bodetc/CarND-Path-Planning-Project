@@ -11,11 +11,13 @@ using namespace std;
 
 const Trajectory PTG::operator()(const State& start_state, const Vehicle& target, const State &delta, double T,
                            const vector<Vehicle> &predictions) {
-  vector<State> all_goals((2 * PTG_N_STEPS + 1) * (PTG_N_SAMPLES + 1));
+  vector<State> all_goals;
+  all_goals.reserve(((2 * PTG_N_STEPS + 1) * (PTG_N_SAMPLES + 1)));
 
   for (int i = -PTG_N_STEPS; i <= PTG_N_STEPS; i++) {
-    double t = T + i * PTG_N_STEPS;
+    double t = T + i * PTG_N_STEPS * PTG_TIMESTEP;
     State goal = target.stateAt(t) + delta;
+    goal.t = t;
 
     all_goals.push_back(goal);
 

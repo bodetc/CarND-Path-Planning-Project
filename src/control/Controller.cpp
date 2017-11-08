@@ -104,5 +104,5 @@ const Trajectory Controller::keep_lane(const State &start_state) {
   double T = HORIZON;
   std::vector<Vehicle> predictions;
 
-  return PolynomialSolver::solve_JMT(start_state, target.stateAt(T)).toTrajectory();
+  return ptg(start_state, target, delta, T, predictions);
 }
