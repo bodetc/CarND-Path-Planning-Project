@@ -9,7 +9,7 @@
 
 using namespace std;
 
-const Trajectory PTG::operator()(const State& start_state, const Vehicle& target, const State &delta, double T,
+const Trajectory PTG::getTrajectory(const State& start_state, const Vehicle& target, const State &delta, double T,
                            const vector<Vehicle> &predictions) {
   vector<State> all_goals;
   all_goals.reserve(((2 * PTG_N_STEPS + 1) * (PTG_N_SAMPLES + 1)));

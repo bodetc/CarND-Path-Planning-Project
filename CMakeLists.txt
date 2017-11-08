@@ -7,7 +7,7 @@ add_definitions(-std=c++11)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
-set(sources src/main.cpp src/control/Controller.cpp src/util/Trajectory.cpp src/util/Map.cpp src/util/Polynomial.cpp src/trajectory/PolynomialSolver.cpp src/trajectory/PTG.cpp src/util/Vehicle.cpp src/trajectory/CostCalculator.cpp src/util/PolynomialTrajectory.cpp)
+set(sources src/main.cpp src/control/Controller.cpp src/util/Trajectory.cpp src/util/Map.cpp src/util/Polynomial.cpp src/trajectory/PolynomialSolver.cpp src/trajectory/PTG.cpp src/util/Vehicle.cpp src/trajectory/CostCalculator.cpp src/util/PolynomialTrajectory.cpp src/behaviour/TargetFinder.cpp)
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 

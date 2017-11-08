@@ -29,6 +29,9 @@ constexpr double TARGET_MPH = 45;
 constexpr double MAX_SPEED = MAX_MPH*MPH_TO_METERS_PER_SECOND;
 constexpr double TARGET_SPEED = TARGET_MPH*MPH_TO_METERS_PER_SECOND;
 
+constexpr double FOLLOW_DISTANCE = 10;
+constexpr double LANE_WIDTH = 4;
+
 ///////////////////
 // Costs for PTG //
 ///////////////////

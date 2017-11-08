@@ -7,6 +7,7 @@
 #include "../definitions.h"
 #include "../utils.h"
 #include "../trajectory/PolynomialSolver.h"
+#include "../behaviour/TargetFinder.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ Controller::Controller(const vector<double> &maps_x, const vector<double> &maps_
 const Trajectory
 Controller::compute_trajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
                                const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y,
-                               const std::vector<Vehicle>& predictions) {
+                               const std::vector<Vehicle> &predictions) {
   State start_state{
       .s = car_s,
       .s_dot = car_speed,
@@ -94,15 +95,14 @@ const State Controller::get_state_from_trajectory(const Trajectory &previous_tra
   };
 }
 
-const Trajectory Controller::keep_lane(State start_state, const std::vector<Vehicle>& predictions) {
-  State target_state{
-      .s = start_state.s,
-      .s_dot = TARGET_SPEED,
-      .d = 6.,
-  };
-  Vehicle target(target_state);
-  State delta{};
+const Trajectory Controller::keep_lane(const State &ego, const std::vector<Vehicle> &predictions) {
   double T = HORIZON;
+  int target_lane = 1;
+  double max_distance = TARGET_SPEED * HORIZON;
 
-  return ptg(start_state, target, delta, T, predictions);
+  State delta{.s=-FOLLOW_DISTANCE};
+
+  Vehicle target = TargetFinder::getTarget(ego, target_lane, max_distance, predictions);
+
+  return ptg.getTrajectory(ego, target, delta, T, predictions);
 }

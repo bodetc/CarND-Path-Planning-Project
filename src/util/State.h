@@ -6,6 +6,7 @@
 #define PATH_PLANNING_STATE_H
 
 #include "../utils.h"
+#include "../definitions.h"
 
 /**
  * Structure for storing vehicle states
@@ -28,6 +29,10 @@ public:
 
   double distance(const State &other) const {
     return ::distance(s, d, other.s, other.d);
+  }
+
+  int getLane() const {
+    return (int) (d / LANE_WIDTH);
   }
 };
 

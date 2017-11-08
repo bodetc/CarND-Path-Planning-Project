@@ -32,7 +32,7 @@ private:
 
   const State get_state_from_trajectory(const Trajectory &previous_trajectory, unsigned long current);
 
-  const Trajectory keep_lane(State start_state, const std::vector<Vehicle>& predictions);
+  const Trajectory keep_lane(const State& start_state, const std::vector<Vehicle>& predictions);
 };
 
 
