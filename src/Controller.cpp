@@ -15,36 +15,15 @@ const Trajectory
 Controller::compute_trajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
                                const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y,
                                double end_path_s, double end_path_d,
-                               const nlohmann::json &sensor_fusion) {
+                               const SensorFusion &sensor_fusion) {
   int prev_size = previous_path_x.size();
+  double lag = (double) prev_size * .02;
 
   if (prev_size > 0) {
     car_s = end_path_s;
   }
 
-  bool too_close = false;
-
-  // Find speed to use based on the car in front
-  for (int i = 0; i < sensor_fusion.size(); i++) {
-
-    float d = sensor_fusion[i][6];
-
-    // Car is in my lane
-    if (d < (2 + 4 * lane + 2) && d > (2 + 4 * lane - 2)) {
-      int id = sensor_fusion[i][0];
-      double vx = sensor_fusion[i][3];
-      double vy = sensor_fusion[i][4];
-      double check_speed_front = sqrt(vx * vx + vy * vy);
-      double check_car_s = sensor_fusion[i][5];
-
-      check_car_s += ((double) prev_size * .02 * check_speed_front); // If using previous points, can project S value out
-      //check S value greater than mine and s gap
-      if ((check_car_s >= car_s) && (check_car_s - car_s) < 30) {
-        cout << "too close" << (check_car_s - car_s) << " lane" << lane << endl;
-        too_close = true;
-      }
-    }
-  }
+  bool too_close = sensor_fusion.isTooClose(lag, lane, car_s);
 
   if(too_close) {
     ref_vel-=.224;
@@ -58,7 +37,6 @@ Controller::compute_trajectory(double car_x, double car_y, double car_s, double 
   double ref_x = car_x;
   double ref_y = car_y;
   double ref_yaw = deg2rad(car_yaw);
-  //car_speed = car_speed*2.237;
   if (prev_size < 2) {
     double prev_car_x = car_x - cos(car_yaw);
     double prev_car_y = car_y - sin(car_yaw);

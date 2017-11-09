@@ -7,7 +7,7 @@
 
 #include "Trajectory.h"
 #include "Map.h"
-#include "json.hpp"
+#include "SensorFusion.h"
 
 class Controller {
   const Map map;
@@ -22,7 +22,7 @@ public:
                                       const std::vector<double> &previous_path_x,
                                       const std::vector<double> &previous_path_y,
                                       double end_path_s, double end_path_d,
-                                      const nlohmann::json &sensor_fusion);
+                                      const SensorFusion &sensor_fusion);
 };
 
 
