@@ -28,12 +28,16 @@ void BehaviourPlanner::updateTargetLane(const State &ego, const std::vector<Vehi
   std::cout << "Performing lane check" << std::endl;
   last_lane_check = 0;
 
+  // If not, then check if it is possible/needed to pass
+  if (checkLeftLane(ego, predictions)) {
+    target_lane--;
+    return;
+  }
+
   // Check if it is possible to go to the right lane
   if (checkRightLane(ego, predictions)) {
     target_lane++;
-    // If not, then check if it is possible/needed to pass
-  } else if (checkLeftLane(ego, predictions)) {
-    target_lane--;
+    return;
   }
 }
 

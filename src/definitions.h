@@ -77,11 +77,11 @@ constexpr double EXPECTED_ACC_IN_ONE_SEC = 1; // m/s
 ///////////////////////////
 
 // Distance to check for car to perform a lane change
-constexpr double RIGHT_LANE_CHECK_FRONT=30;
-constexpr double RIGHT_LANE_CHECK_BACK=25;
+constexpr double RIGHT_LANE_CHECK_FRONT=25;
+constexpr double RIGHT_LANE_CHECK_BACK=20;
 
-constexpr double LEFT_LANE_CHECK_FRONT=30;
-constexpr double LEFT_LANE_CHECK_BACK=25;
+constexpr double LEFT_LANE_CHECK_FRONT=25;
+constexpr double LEFT_LANE_CHECK_BACK=20;
 
 constexpr double PASSING_DISTANCE=30;
 
