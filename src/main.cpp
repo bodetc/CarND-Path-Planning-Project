@@ -10,6 +10,7 @@
 #include "json.hpp"
 #include "utils.h"
 #import "spline.h"
+#include "Map.h"
 
 using namespace std;
 
@@ -110,6 +111,8 @@ int main() {
           // Sensor Fusion Data, a list of all other cars on the same side of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
 
+          Map map(map_waypoints_x, map_waypoints_y, map_waypoints_s);
+
           int prev_size = previous_path_x.size();
 
           if (prev_size > 0) {
@@ -180,12 +183,9 @@ int main() {
             ptsy.push_back(ref_y);
 
           }
-          vector<double> next_wp0 = getXY(car_s + 30, (2 + 4 * lane), map_waypoints_s, map_waypoints_x,
-                                          map_waypoints_y);
-          vector<double> next_wp1 = getXY(car_s + 60, (2 + 4 * lane), map_waypoints_s, map_waypoints_x,
-                                          map_waypoints_y);
-          vector<double> next_wp2 = getXY(car_s + 90, (2 + 4 * lane), map_waypoints_s, map_waypoints_x,
-                                          map_waypoints_y);
+          vector<double> next_wp0 = map.getXY(car_s + 30, (2 + 4 * lane));
+          vector<double> next_wp1 = map.getXY(car_s + 60, (2 + 4 * lane));
+          vector<double> next_wp2 = map.getXY(car_s + 90, (2 + 4 * lane));
 
           ptsx.push_back(next_wp0[0]);
           ptsx.push_back(next_wp1[0]);
