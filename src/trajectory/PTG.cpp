@@ -10,14 +10,14 @@
 
 using namespace std;
 
-const Trajectory PTG::getTrajectory(const State &start_state, const Vehicle &target, const State &delta, double T,
+const Trajectory PTG::getTrajectory(const State &start_state, const Vehicle &target, double T,
                                     const vector<Vehicle> &predictions) {
   vector<State> all_goals;
   all_goals.reserve(((2 * PTG_N_STEPS + 1) * (PTG_N_SAMPLES + 1)));
 
   for (int i = -PTG_N_STEPS; i <= PTG_N_STEPS; i++) {
     double t = T + i * PTG_N_STEPS * PTG_TIMESTEP;
-    State goal = target.stateAt(t) + delta;
+    State goal = target.stateAt(t);
     goal.t = t;
 
     all_goals.push_back(goal);
@@ -32,7 +32,7 @@ const Trajectory PTG::getTrajectory(const State &start_state, const Vehicle &tar
   for (auto goal : all_goals) {
     PolynomialTrajectory trajectory = PolynomialSolver::solve_JMT(start_state, goal);
     vector<State> states = trajectory.toStates();
-    double cost = cost_calculator.calculate_cost(states, target, delta, T, predictions);
+    double cost = cost_calculator.calculate_cost(states, target, T, predictions);
     if (cost < best_cost) {
       best_trajectory = trajectory;
       best_cost = cost;
@@ -40,7 +40,7 @@ const Trajectory PTG::getTrajectory(const State &start_state, const Vehicle &tar
   }
 
   State selected = best_trajectory.stateAt(best_trajectory.get_t_max());
-  cout << "Selected=(" << selected.s << ", " << selected.d << ")" << endl;
+  //cout << "Selected=(" << selected.s << ", " << selected.d << ")" << endl;
   return best_trajectory.toTrajectory();
 }
 

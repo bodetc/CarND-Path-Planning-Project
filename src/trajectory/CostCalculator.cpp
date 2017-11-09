@@ -10,7 +10,7 @@
  * Penalizes trajectories that span a duration which is longer or shorter than the duration requested.
  */
 class TimeCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     double t = ego[ego.size() - 1].t;
     return logistic(fabs(t - T) / T);
@@ -21,11 +21,11 @@ class TimeCost : public AbstractCostFunction {
  * Penalizes trajectories whose s coordinate (and derivatives) differ from the goal.
  */
 class SDiffCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     const State &destination = ego[ego.size() - 1];
     double t = destination.t;
-    State goal = target.stateAt(t) + delta;
+    State goal = target.stateAt(t);
 
     double cost = 0.;
     cost += logistic(fabs(goal.s - destination.s) / PTG_SIGMA_S);
@@ -39,11 +39,11 @@ class SDiffCost : public AbstractCostFunction {
  * Penalizes trajectories whose d coordinate (and derivatives) differ from the goal.
  */
 class DDiffCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     const State &destination = ego[ego.size() - 1];
     double t = destination.t;
-    State goal = target.stateAt(t) + delta;
+    State goal = target.stateAt(t);
 
     double cost = 0.;
     cost += logistic(fabs(goal.d - destination.d) / PTG_SIGMA_D);
@@ -77,7 +77,7 @@ double nearestApproach(const std::vector<State> &ego, const std::vector<Vehicle>
 }
 
 class CollisionCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     double closest = nearestApproach(ego, predictions);
     return closest < VEHICLE_RADIUS ? 1. : 0.;
@@ -85,7 +85,7 @@ class CollisionCost : public AbstractCostFunction {
 };
 
 class BufferCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     double closest = nearestApproach(ego, predictions);
     return logistic(2 * VEHICLE_RADIUS / closest);
@@ -93,7 +93,7 @@ class BufferCost : public AbstractCostFunction {
 };
 
 class StaysOnRoadCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     for (auto state : ego) {
       if (state.d < 0. || state.d > 12.) {
@@ -105,7 +105,7 @@ class StaysOnRoadCost : public AbstractCostFunction {
 };
 
 class SpeedLimitCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     for (auto state : ego) {
       if (state.s > MAX_SPEED) {
@@ -117,7 +117,7 @@ class SpeedLimitCost : public AbstractCostFunction {
 };
 
 class EfficiencyCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     const State &destination = ego[ego.size() - 1];
     const double t = destination.t;
@@ -129,7 +129,7 @@ class EfficiencyCost : public AbstractCostFunction {
 };
 
 class TotalAccelerationCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     double acc = 0;
     for (auto state : ego) {
@@ -140,7 +140,7 @@ class TotalAccelerationCost : public AbstractCostFunction {
 };
 
 class MaxAccelerationCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     for (auto state : ego) {
       if (fabs(state.s_dot) > MAX_ACCEL || fabs(state.d_dot) > MAX_ACCEL) {
@@ -152,7 +152,7 @@ class MaxAccelerationCost : public AbstractCostFunction {
 };
 
 class TotalJerkCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     double jerk = 0;
     for (auto state : ego) {
@@ -163,7 +163,7 @@ class TotalJerkCost : public AbstractCostFunction {
 };
 
 class MaxJerkCost : public AbstractCostFunction {
-  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+  double calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                         const std::vector<Vehicle> &predictions) override {
     for (auto state : ego) {
       if (fabs(state.s_ddot) > MAX_JERK || fabs(state.d_ddot) > MAX_JERK) {
@@ -207,11 +207,11 @@ CostCalculator::~CostCalculator() {
 }
 
 double
-CostCalculator::calculate_cost(const std::vector<State> &ego, const Vehicle &target, const State &delta, double T,
+CostCalculator::calculate_cost(const std::vector<State> &ego, const Vehicle &target, double T,
                                const std::vector<Vehicle> &predictions) {
   double totalCost = 0;
   for (auto &wcf : weighted_cost_functions) {
-    totalCost += wcf.weight * wcf.cost_function->calculate_cost(ego, target, delta, T, predictions);
+    totalCost += wcf.weight * wcf.cost_function->calculate_cost(ego, target, T, predictions);
   }
   return totalCost;
 }

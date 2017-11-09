@@ -51,7 +51,7 @@ Controller::update_state_for_lag(State &start_state,
     // Calculate number of steps elapsed
     unsigned long elapsed = previous_trajectory.size() - previous_path_x.size();
 
-    cout << "Elapsed: " << elapsed << endl;
+    //cout << "Elapsed: " << elapsed << endl;
 
     // Use some steps for the previous list to allow for lag
     for (int i = 0; i < N_LAG; i++) {
@@ -100,10 +100,9 @@ const Trajectory Controller::keep_lane(const State &ego, const std::vector<Vehic
   int target_lane = 1;
   double max_distance = TARGET_SPEED * HORIZON;
 
-  State delta{.s=-FOLLOW_DISTANCE};
-
   Vehicle target = TargetFinder::getTarget(ego, target_lane, max_distance, predictions);
-  State goal = target.stateAt(T)+delta;
+  State goal = target.stateAt(T);
   cout << "Goal=(" << goal.s << "," << goal.d << ")" << endl;
-  return ptg.getTrajectory(ego, target, delta, T, predictions);
+
+  return ptg.getTrajectory(ego, target, T, predictions);
 }

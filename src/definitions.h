@@ -14,7 +14,7 @@
 constexpr int N_LAG = 5; // Timesteps to skip to allow for response lag
 
 constexpr double TIMESTEP = 0.020; // 20 ms
-constexpr int N_STEPS = 50;
+constexpr int N_STEPS = 100;
 constexpr double HORIZON = TIMESTEP * N_STEPS;
 
 ///////////////////////
@@ -29,7 +29,7 @@ constexpr double TARGET_MPH = 45;
 constexpr double MAX_SPEED = MAX_MPH * MPH_TO_METERS_PER_SECOND;
 constexpr double TARGET_SPEED = TARGET_MPH * MPH_TO_METERS_PER_SECOND;
 
-constexpr double FOLLOW_DISTANCE = 10;
+constexpr double FOLLOW_DISTANCE = 20;
 constexpr double LANE_WIDTH = 4;
 
 ///////////////////
@@ -40,31 +40,18 @@ constexpr int PTG_N_STEPS = 4;
 constexpr double PTG_TIMESTEP = 0.040;
 constexpr int PTG_N_SAMPLES = 10;
 
-constexpr double COLLISION_COST = 0;
-constexpr double STAYS_ON_ROAD_COST = 0;
-constexpr double MAX_ACCELERATION_COST = 0;
-constexpr double MAX_JERK_COST = 0;
-constexpr double SPEED_LIMIT_COST = 0;
-constexpr double TOTAL_ACCELERATION_COST = 0;
-constexpr double TOTAL_JERK_COST = 0;
-constexpr double D_DIFF_COST = 0;
-constexpr double S_DIFF_COST = 1;
-constexpr double BUFFER_COST = 0;
-constexpr double EFFICIENCY_COST = 0;
-constexpr double TIME_DIFF_COST = 0;
-
-//constexpr double COLLISION_COST = 1e8;
-//constexpr double STAYS_ON_ROAD_COST = 1e8;
-//constexpr double MAX_ACCELERATION_COST = 1e9;
-//constexpr double MAX_JERK_COST = 1e9;
-//constexpr double SPEED_LIMIT_COST = 1e7;
-//constexpr double TOTAL_ACCELERATION_COST = 1e8;
-//constexpr double TOTAL_JERK_COST = 1e8;
-//constexpr double D_DIFF_COST = 1e4;
-//constexpr double S_DIFF_COST = 1e3;
-//constexpr double BUFFER_COST = 1e3;
-//constexpr double EFFICIENCY_COST = 1e3;
-//constexpr double TIME_DIFF_COST = 1;
+constexpr double COLLISION_COST          = 1e4;
+constexpr double STAYS_ON_ROAD_COST      = 1e4;
+constexpr double SPEED_LIMIT_COST        = 1e4;
+constexpr double TOTAL_JERK_COST         = 1e3;
+constexpr double TOTAL_ACCELERATION_COST = 1e3;
+constexpr double D_DIFF_COST             = 10;
+constexpr double S_DIFF_COST             = 10;
+constexpr double BUFFER_COST             = 5;
+constexpr double MAX_JERK_COST           = 1;
+constexpr double MAX_ACCELERATION_COST   = 1;
+constexpr double EFFICIENCY_COST         = 0;
+constexpr double TIME_DIFF_COST          = 0;
 
 constexpr double PTG_SIGMA_S = 20.;
 constexpr double PTG_SIGMA_S_DOT = 4.;

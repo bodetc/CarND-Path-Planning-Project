@@ -20,7 +20,7 @@ private:
   const State perturb_goal(const State &goal);
 
 public:
-  const Trajectory getTrajectory(const State& start_state, const Vehicle& target, const State& delta, double T, const std::vector<Vehicle>& predictions);
+  const Trajectory getTrajectory(const State& start_state, const Vehicle& target, double T, const std::vector<Vehicle>& predictions);
 };
 
 

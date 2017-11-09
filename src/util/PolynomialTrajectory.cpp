@@ -22,6 +22,7 @@ const State PolynomialTrajectory::stateAt(double t) const {
       .d = d.evaluate(t),
       .d_dot = d_dot.evaluate(t),
       .d_ddot = d_ddot.evaluate(t),
+      .t = t,
   };
 }
 
