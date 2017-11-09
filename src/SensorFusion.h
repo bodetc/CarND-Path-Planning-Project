@@ -14,7 +14,8 @@ private:
 public:
   SensorFusion(const nlohmann::json &sensor_fusion);
 
-  bool isTooClose(double lag, int lane, double car_s) const;
+  // Returns true if there is a car in the current lane that is too close to ego
+  bool is_too_close(double lag, int lane, double car_s) const;
 };
 
 

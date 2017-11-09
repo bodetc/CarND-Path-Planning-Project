@@ -9,8 +9,9 @@
 // Simulation definitions //
 ////////////////////////////
 
-constexpr double TIMESTEP = .2; // s
-constexpr int N_STEP = 50;
+constexpr double TIMESTEP = .02; // s
+constexpr int N_STEPS = 50;
+constexpr bool DEBUG = true;
 
 ////////////////////////////////
 // Physical world definitions //
@@ -20,11 +21,16 @@ constexpr double MPH_TO_METERS_PER_SECOND = 0.44704;
 constexpr double TARGET_MPH = 49.5;
 constexpr double TARGET_SPEED = TARGET_MPH*MPH_TO_METERS_PER_SECOND;
 
+constexpr double LANE_WIDTH = 4;
+
 //////////////////////////
 // Control definitions //
 /////////////////////////
 
+constexpr int N_SPLINE_FORWARD = 3;
+constexpr double SPLINE_DISTANCE = 30;
+
 constexpr double FORWARD_DISTANCE = 30;
-constexpr double SPEED_STEP = 0.01;
+constexpr double SPEED_STEP = 0.1;
 
 #endif //PATH_PLANNING_DEFINITIONS_H_H

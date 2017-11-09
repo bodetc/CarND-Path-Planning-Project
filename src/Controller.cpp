@@ -17,18 +17,18 @@ Controller::compute_trajectory(double car_x, double car_y, double car_s, double 
                                double end_path_s, double end_path_d,
                                const SensorFusion &sensor_fusion) {
   int prev_size = previous_path_x.size();
-  double lag = (double) prev_size * .02;
+  double lag = (double) prev_size * TIMESTEP;
 
   if (prev_size > 0) {
     car_s = end_path_s;
   }
 
-  bool too_close = sensor_fusion.isTooClose(lag, lane, car_s);
+  bool too_close = sensor_fusion.is_too_close(lag, lane, car_s);
 
-  if(too_close) {
-    ref_vel-=.224;
-  } else if (ref_vel<49.5) {
-    ref_vel+=.224;
+  if (too_close) {
+    ref_vel -= SPEED_STEP;
+  } else if (ref_vel < TARGET_SPEED) {
+    ref_vel += SPEED_STEP;
   }
 
   vector<double> ptsx;
@@ -62,17 +62,12 @@ Controller::compute_trajectory(double car_x, double car_y, double car_s, double 
     ptsy.push_back(ref_y);
 
   }
-  vector<double> next_wp0 = map.getXY(car_s + 30, (2 + 4 * lane));
-  vector<double> next_wp1 = map.getXY(car_s + 60, (2 + 4 * lane));
-  vector<double> next_wp2 = map.getXY(car_s + 90, (2 + 4 * lane));
 
-  ptsx.push_back(next_wp0[0]);
-  ptsx.push_back(next_wp1[0]);
-  ptsx.push_back(next_wp2[0]);
-
-  ptsy.push_back(next_wp0[1]);
-  ptsy.push_back(next_wp1[1]);
-  ptsy.push_back(next_wp2[1]);
+  for(int i = 1; i <= N_SPLINE_FORWARD; i++) {
+    vector<double> next_wp = map.getXY(car_s + i*SPLINE_DISTANCE, Map::get_mid_lane(lane));
+    ptsy.push_back(next_wp[1]);
+    ptsx.push_back(next_wp[0]);
+  }
 
   for (int i = 0; i < ptsx.size(); i++) {
     double shift_x = ptsx[i] - ref_x;
@@ -89,24 +84,17 @@ Controller::compute_trajectory(double car_x, double car_y, double car_s, double 
   vector<double> next_x_vals;
   vector<double> next_y_vals;
 
-  for (int i = 0; i < previous_path_x.size(); i++) {
-    next_x_vals.push_back(previous_path_x[i]);
-    next_y_vals.push_back(previous_path_y[i]);
+  Trajectory trajectory (previous_path_x, previous_path_y);
 
-  }
-  double target_x = 30.0;
+  double target_x = SPLINE_DISTANCE;
   double target_y = s(target_x);
   double target_dist = sqrt((target_x) * (target_x) + (target_y) * (target_y));
 
   double x_add_on = 0;
-  double cur_velocity;
 
-  for (int i = 1; i <= 50 - previous_path_x.size(); i++) {
-    if (cur_velocity > ref_vel) {
-      cur_velocity += 0.224;
-    }
+  for (int i = 1; i <= N_STEPS - prev_size; i++) {
 
-    double N = (target_dist / (.02 * ref_vel / 2.24));
+    double N = target_dist / (ref_vel * TIMESTEP);
     double x_point = x_add_on + (target_x) / N;
     double y_point = s(x_point);
 
@@ -122,11 +110,10 @@ Controller::compute_trajectory(double car_x, double car_y, double car_s, double 
     y_point += ref_y;
 
 
-    next_x_vals.push_back(x_point);
-    next_y_vals.push_back(y_point);
+    trajectory.push_back(x_point, y_point);
   }
 
-  return Trajectory(next_x_vals, next_y_vals);
+  return trajectory;
 }
 
 

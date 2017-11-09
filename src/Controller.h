@@ -12,17 +12,18 @@
 class Controller {
   const Map map;
 
-  double ref_vel=0;
+  double ref_vel = 0;
   int lane = 1;
 
 public:
   Controller(const std::vector<double> &maps_x, const std::vector<double> &maps_y, const std::vector<double> &maps_s);
 
-  const Trajectory compute_trajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
-                                      const std::vector<double> &previous_path_x,
-                                      const std::vector<double> &previous_path_y,
-                                      double end_path_s, double end_path_d,
-                                      const SensorFusion &sensor_fusion);
+  const Trajectory
+  compute_trajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
+                     const std::vector<double> &previous_path_x,
+                     const std::vector<double> &previous_path_y,
+                     double end_path_s, double end_path_d,
+                     const SensorFusion &sensor_fusion);
 };
 
 
