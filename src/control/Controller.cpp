@@ -18,7 +18,7 @@ Controller::Controller(const vector<double> &maps_x, const vector<double> &maps_
 const Trajectory
 Controller::compute_trajectory(double car_x, double car_y, double car_s, double car_d, double car_yaw, double car_speed,
                                const std::vector<double> &previous_path_x, const std::vector<double> &previous_path_y,
-                               const std::vector<Vehicle> &predictions) {
+                               const std::vector<Vehicle> &predictions_) {
   State start_state{
       .s = car_s,
       .s_dot = car_speed,
@@ -29,12 +29,20 @@ Controller::compute_trajectory(double car_x, double car_y, double car_s, double 
       .t = 0
   };
 
+  // Update the current state of the car for some lag
   Trajectory lag_trajectory = update_state_for_lag(start_state, previous_path_x, previous_path_y);
+
+  std::vector<Vehicle> predictions = update_predictions_for_lag(lag_trajectory.size()*TIMESTEP, predictions_);
 
   cout << "Ego=(" << start_state.s << ", " << start_state.d << ")" << endl;
 
-  Trajectory new_trajectory = keep_lane(start_state, predictions);
+  // Find a target to go to from the behaviour planner
+  Vehicle target = behaviourPlanner.update(start_state, predictions);
 
+  // Plan the best trajectory to the given target
+  Trajectory new_trajectory = ptg.getTrajectory(start_state, target, HORIZON, predictions);
+
+  // Add lag and computed trajectory, and return the XY values of the result
   previous_trajectory = lag_trajectory;
   previous_trajectory.push_all_back(new_trajectory);
   return map.getXYspline(previous_trajectory);
@@ -95,7 +103,10 @@ const State Controller::get_state_from_trajectory(const Trajectory &previous_tra
   };
 }
 
-const Trajectory Controller::keep_lane(const State &ego, const std::vector<Vehicle> &predictions) {
-  Vehicle target = behaviourPlanner.update(ego, predictions);
-  return ptg.getTrajectory(ego, target, HORIZON, predictions);
+const std::vector<Vehicle> Controller::update_predictions_for_lag(double lag, const std::vector<Vehicle> &predictions) {
+  vector<Vehicle> new_predictions;
+  for(auto prediction : predictions){
+    new_predictions.emplace_back(prediction.stateAt(lag));
+  }
+  return new_predictions;
 }
