@@ -9,9 +9,11 @@
 #include "../util/Map.h"
 #include "../util/State.h"
 #include "../trajectory/PTG.h"
+#include "../behaviour/BehaviourPlanner.h"
 
 class Controller {
   const Map map;
+  BehaviourPlanner behaviourPlanner;
   PTG ptg;
 
   Trajectory previous_trajectory;

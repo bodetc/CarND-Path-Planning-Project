@@ -22,7 +22,7 @@ public:
 
   Vehicle& operator=(const Vehicle& other) = default;
 
-  const State stateAt(double T) const;
+  const State stateAt(double T) const { return start.stateAt(T); }
   const State& startState() const { return start; }
 };
 

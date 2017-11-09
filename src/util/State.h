@@ -34,6 +34,8 @@ public:
   int getLane() const {
     return (int) (d / LANE_WIDTH);
   }
+
+  const State stateAt(double T) const;
 };
 
 

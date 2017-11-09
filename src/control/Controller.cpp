@@ -7,7 +7,7 @@
 #include "../definitions.h"
 #include "../utils.h"
 #include "../trajectory/PolynomialSolver.h"
-#include "../behaviour/TargetFinder.h"
+#include "../behaviour/LaneSearch.h"
 
 using namespace std;
 
@@ -96,13 +96,6 @@ const State Controller::get_state_from_trajectory(const Trajectory &previous_tra
 }
 
 const Trajectory Controller::keep_lane(const State &ego, const std::vector<Vehicle> &predictions) {
-  double T = HORIZON;
-  int target_lane = 1;
-  double max_distance = TARGET_SPEED * HORIZON;
-
-  Vehicle target = TargetFinder::getTarget(ego, target_lane, max_distance, predictions);
-  State goal = target.stateAt(T);
-  cout << "Goal=(" << goal.s << "," << goal.d << ")" << endl;
-
-  return ptg.getTrajectory(ego, target, T, predictions);
+  Vehicle target = behaviourPlanner.update(ego, predictions);
+  return ptg.getTrajectory(ego, target, HORIZON, predictions);
 }

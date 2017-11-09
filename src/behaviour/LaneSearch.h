@@ -7,7 +7,7 @@
 
 #include "../util/Vehicle.h"
 
-class TargetFinder {
+class LaneSearch {
   static int getInLane(const State &ego, int target_lane, double max_distance, const std::vector<Vehicle> &predictions, bool forward);
 
 public:

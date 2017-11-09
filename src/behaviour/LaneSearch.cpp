@@ -3,12 +3,12 @@
 //
 
 #include <iostream>
-#include "TargetFinder.h"
+#include "LaneSearch.h"
 #include "../definitions.h"
 
 
 int
-TargetFinder::getInLane(const State &ego, int target_lane, double max_distance, const std::vector<Vehicle> &predictions,
+LaneSearch::getInLane(const State &ego, int target_lane, double max_distance, const std::vector<Vehicle> &predictions,
                         bool forward) {
   double min_distance = std::numeric_limits<double>::max();
   int next_in_lane = -1;
@@ -29,17 +29,17 @@ TargetFinder::getInLane(const State &ego, int target_lane, double max_distance, 
   return next_in_lane;
 }
 
-int TargetFinder::getNextInLane(const State &ego, int target_lane, double max_distance,
+int LaneSearch::getNextInLane(const State &ego, int target_lane, double max_distance,
                                 const std::vector<Vehicle> &predictions) {
   return getInLane(ego, target_lane, max_distance, predictions, true);
 }
 
-int TargetFinder::getPreviousInLane(const State &ego, int target_lane, double max_distance,
+int LaneSearch::getPreviousInLane(const State &ego, int target_lane, double max_distance,
                                     const std::vector<Vehicle> &predictions) {
   return getInLane(ego, target_lane, max_distance, predictions, false);
 }
 
-const Vehicle TargetFinder::getTarget(const State &ego, int target_lane, double max_distance,
+const Vehicle LaneSearch::getTarget(const State &ego, int target_lane, double max_distance,
                                       const std::vector<Vehicle> &predictions) {
   State target_state{};
 
@@ -60,6 +60,13 @@ const Vehicle TargetFinder::getTarget(const State &ego, int target_lane, double 
   // Slowly fill the gap to the car in front
   double current_distance = (target_state.s - ego.s);
   target_state.s -= .3 * FOLLOW_DISTANCE + .7 * current_distance;
+
+  // Ensure that the target is not too far
+  double final_distance = target_state.stateAt(HORIZON).s-ego.s;
+  double max_speed_distance= TARGET_SPEED*HORIZON;
+  if(final_distance>max_speed_distance) {
+    target_state.s-=(final_distance-max_speed_distance);
+  }
 
   // Do not reproduce the swerving of the car in front and stay in the middle lane
   target_state.d = (target_lane + .5) * LANE_WIDTH;
