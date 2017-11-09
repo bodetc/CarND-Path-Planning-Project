@@ -34,3 +34,11 @@ const Trajectory PolynomialTrajectory::toTrajectory() const {
   }
   return trajectory;
 }
+
+const std::vector<State> PolynomialTrajectory::toStates() const {
+  std::vector<State> states;
+  for (double t = 0; t <= t_max; t += TIMESTEP) {
+    states.push_back(stateAt(t));
+  }
+  return states;
+}

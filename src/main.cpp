@@ -33,7 +33,7 @@ string hasData(string s) {
 const vector<Vehicle> getPredictions(const json &sensor_fusion) {
   vector<Vehicle> predictions;
   for (auto element : sensor_fusion) {
-    int id = element[0];
+    // int id = element[0];
     // double x = element[1];
     // double y = element[2];
     double vx = element[3];
@@ -47,8 +47,6 @@ const vector<Vehicle> getPredictions(const json &sensor_fusion) {
         .s_dot = speed,
         .d = d,
     };
-
-    cout << "Car " << id << ": s=" << s << ", d=" << d << endl;
 
     predictions.emplace_back(start_state);
   }
@@ -146,7 +144,7 @@ int main() {
           //this_thread::sleep_for(chrono::milliseconds(1000));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 
-          cout << msg << endl;
+          //cout << msg << endl;
 
         }
       } else {

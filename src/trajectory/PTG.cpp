@@ -3,14 +3,15 @@
 //
 
 #include <random>
+#include <iostream>
 #include "PTG.h"
 #include "../definitions.h"
 #include "PolynomialSolver.h"
 
 using namespace std;
 
-const Trajectory PTG::getTrajectory(const State& start_state, const Vehicle& target, const State &delta, double T,
-                           const vector<Vehicle> &predictions) {
+const Trajectory PTG::getTrajectory(const State &start_state, const Vehicle &target, const State &delta, double T,
+                                    const vector<Vehicle> &predictions) {
   vector<State> all_goals;
   all_goals.reserve(((2 * PTG_N_STEPS + 1) * (PTG_N_SAMPLES + 1)));
 
@@ -28,15 +29,18 @@ const Trajectory PTG::getTrajectory(const State& start_state, const Vehicle& tar
 
   PolynomialTrajectory best_trajectory;
   double best_cost = std::numeric_limits<double>::max();
-  for(auto goal : all_goals) {
+  for (auto goal : all_goals) {
     PolynomialTrajectory trajectory = PolynomialSolver::solve_JMT(start_state, goal);
-    double cost = cost_calculator.calculate_cost(trajectory, target, delta, T, predictions);
-    if(cost < best_cost) {
-      best_trajectory=trajectory;
+    vector<State> states = trajectory.toStates();
+    double cost = cost_calculator.calculate_cost(states, target, delta, T, predictions);
+    if (cost < best_cost) {
+      best_trajectory = trajectory;
       best_cost = cost;
     }
   }
 
+  State selected = best_trajectory.stateAt(best_trajectory.get_t_max());
+  cout << "Selected=(" << selected.s << ", " << selected.d << ")" << endl;
   return best_trajectory.toTrajectory();
 }
 

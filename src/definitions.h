@@ -15,7 +15,7 @@ constexpr int N_LAG = 5; // Timesteps to skip to allow for response lag
 
 constexpr double TIMESTEP = 0.020; // 20 ms
 constexpr int N_STEPS = 50;
-constexpr double HORIZON = TIMESTEP*N_STEPS;
+constexpr double HORIZON = TIMESTEP * N_STEPS;
 
 ///////////////////////
 // Speed definitions //
@@ -26,8 +26,8 @@ constexpr double MPH_TO_METERS_PER_SECOND = 0.44704;
 constexpr double MAX_MPH = 50;
 constexpr double TARGET_MPH = 45;
 
-constexpr double MAX_SPEED = MAX_MPH*MPH_TO_METERS_PER_SECOND;
-constexpr double TARGET_SPEED = TARGET_MPH*MPH_TO_METERS_PER_SECOND;
+constexpr double MAX_SPEED = MAX_MPH * MPH_TO_METERS_PER_SECOND;
+constexpr double TARGET_SPEED = TARGET_MPH * MPH_TO_METERS_PER_SECOND;
 
 constexpr double FOLLOW_DISTANCE = 10;
 constexpr double LANE_WIDTH = 4;
@@ -40,12 +40,33 @@ constexpr int PTG_N_STEPS = 4;
 constexpr double PTG_TIMESTEP = 0.040;
 constexpr int PTG_N_SAMPLES = 10;
 
-constexpr double TIME_DIFF_COST = 1;
-constexpr double S_DIFF_COST = 10;
-constexpr double D_DIFF_COST = 100;
-constexpr double COLLISION_COST = 1000000;
+constexpr double COLLISION_COST = 0;
+constexpr double STAYS_ON_ROAD_COST = 0;
+constexpr double MAX_ACCELERATION_COST = 0;
+constexpr double MAX_JERK_COST = 0;
+constexpr double SPEED_LIMIT_COST = 0;
+constexpr double TOTAL_ACCELERATION_COST = 0;
+constexpr double TOTAL_JERK_COST = 0;
+constexpr double D_DIFF_COST = 0;
+constexpr double S_DIFF_COST = 1;
+constexpr double BUFFER_COST = 0;
+constexpr double EFFICIENCY_COST = 0;
+constexpr double TIME_DIFF_COST = 0;
 
-constexpr double PTG_SIGMA_S = 10.;
+//constexpr double COLLISION_COST = 1e8;
+//constexpr double STAYS_ON_ROAD_COST = 1e8;
+//constexpr double MAX_ACCELERATION_COST = 1e9;
+//constexpr double MAX_JERK_COST = 1e9;
+//constexpr double SPEED_LIMIT_COST = 1e7;
+//constexpr double TOTAL_ACCELERATION_COST = 1e8;
+//constexpr double TOTAL_JERK_COST = 1e8;
+//constexpr double D_DIFF_COST = 1e4;
+//constexpr double S_DIFF_COST = 1e3;
+//constexpr double BUFFER_COST = 1e3;
+//constexpr double EFFICIENCY_COST = 1e3;
+//constexpr double TIME_DIFF_COST = 1;
+
+constexpr double PTG_SIGMA_S = 20.;
 constexpr double PTG_SIGMA_S_DOT = 4.;
 constexpr double PTG_SIGMA_S_DDOT = 2.;
 constexpr double PTG_SIGMA_D = 1.;
@@ -53,5 +74,10 @@ constexpr double PTG_SIGMA_D_DOT = 1.;
 constexpr double PTG_SIGMA_D_DDOT = 1.;
 
 constexpr double VEHICLE_RADIUS = 1.5;  // model vehicle as circle to simplify collision detection
+
+constexpr double MAX_JERK = 10;// m/s/s/s
+constexpr double MAX_ACCEL = 10;// m/s/s
+constexpr double EXPECTED_JERK_IN_ONE_SEC = 2;// m/s/s
+constexpr double EXPECTED_ACC_IN_ONE_SEC = 1; // m/s
 
 #endif //PATH_PLANNING_DEFINITIONS_H

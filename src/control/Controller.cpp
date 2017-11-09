@@ -103,6 +103,7 @@ const Trajectory Controller::keep_lane(const State &ego, const std::vector<Vehic
   State delta{.s=-FOLLOW_DISTANCE};
 
   Vehicle target = TargetFinder::getTarget(ego, target_lane, max_distance, predictions);
-
+  State goal = target.stateAt(T)+delta;
+  cout << "Goal=(" << goal.s << "," << goal.d << ")" << endl;
   return ptg.getTrajectory(ego, target, delta, T, predictions);
 }
