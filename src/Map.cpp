@@ -12,6 +12,7 @@ Map::Map(const vector<double> &maps_x, const vector<double> &maps_y, const vecto
     maps_x(maps_x), maps_y(maps_y), maps_s(maps_s) {
 }
 
+// Append trajectory using the new reference velocity and target lane
 const Trajectory Map::complete_trajectory(int target_lane, double ref_vel,
                                           double car_x, double car_y, double car_s, double car_yaw,
                                           const std::vector<double> &previous_path_x,
@@ -126,38 +127,4 @@ vector<double> Map::getXY(double s, double d) const {
   double y = seg_y + d * sin(perp_heading);
 
   return {x, y};
-}
-
-int Map::ClosestWaypoint(double x, double y) const {
-  double closestLen = 100000; //large number
-  int closestWaypoint = 0;
-
-  for (int i = 0; i < maps_x.size(); i++) {
-    double map_x = maps_x[i];
-    double map_y = maps_y[i];
-    double dist = distance(x, y, map_x, map_y);
-    if (dist < closestLen) {
-      closestLen = dist;
-      closestWaypoint = i;
-    }
-  }
-
-  return closestWaypoint;
-}
-
-int Map::NextWaypoint(double x, double y, double theta) const {
-  int closestWaypoint = ClosestWaypoint(x, y);
-
-  double map_x = maps_x[closestWaypoint];
-  double map_y = maps_y[closestWaypoint];
-
-  double heading = atan2((map_y - y), (map_x - x));
-
-  double angle = abs(theta - heading);
-
-  if (angle > M_PI / 4) {
-    closestWaypoint++;
-  }
-
-  return closestWaypoint;
 }

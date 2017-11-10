@@ -1,7 +1,6 @@
 #include <fstream>
 #include <uWS/uWS.h>
 #include <thread>
-#include "Eigen-3.3/Eigen/Core"
 #include "json.hpp"
 #include "Controller.h"
 
@@ -13,7 +12,7 @@ using json = nlohmann::json;
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
 // else the empty string "" will be returned.
-string hasData(string s) {
+string hasData(const string &s) {
   auto found_null = s.find("null");
   auto b1 = s.find_first_of('[');
   auto b2 = s.find_first_of('}');
@@ -106,10 +105,11 @@ int main() {
 
           // My code here:
           // All personal logic was implemented in the Controller class
+          SensorFusion sf (sensor_fusion);
           Trajectory trajectory = controller.compute_trajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed,
                                                                 previous_path_x, previous_path_y,
                                                                 end_path_s,end_path_d,
-                                                                sensor_fusion);
+                                                                sf);
 
           json msgJson;
           msgJson["next_x"] = trajectory.getX();

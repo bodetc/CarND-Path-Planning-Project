@@ -13,8 +13,9 @@ private:
   std::vector<Vehicle> observations;
 
 public:
-  SensorFusion(const nlohmann::json &sensor_fusion);
+  explicit SensorFusion(const nlohmann::json &sensor_fusion);
 
+  // Returns true if there is no one in the given lane around ego, and that the lane is safe to change to
   bool is_lane_empty(double lag, int lane, double car_s) const;
 
   // Returns true if there is a car in the current lane that is too close to ego

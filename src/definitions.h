@@ -29,21 +29,23 @@ constexpr double TARGET_SPEED = TARGET_MPH*MPH_TO_METERS_PER_SECOND;
 constexpr double PASSING_MPH = 45.;
 constexpr double PASSING_SPEED = PASSING_MPH*MPH_TO_METERS_PER_SECOND;
 
-constexpr double LANE_WIDTH = 4;
+// Characteristics of the road
+constexpr double LANE_WIDTH = 4; // m
 constexpr double N_LANES = 3;
 
 //////////////////////////
 // Control definitions //
 /////////////////////////
 
-constexpr int N_SPLINE_FORWARD = 3;
-constexpr double SPLINE_DISTANCE = 30;
+constexpr int N_SPLINE_FORWARD = 3; // How many points forward to spline
+constexpr double SPLINE_DISTANCE = 30; // How far to set the points
 
-constexpr double FORWARD_DISTANCE = 30;
-constexpr double SPEED_STEP = 0.1;
+constexpr double FORWARD_DISTANCE = 30; // m. Distance under which to slow down
+constexpr double SPEED_STEP = 0.1; // m/s -> a = 2 m/s
 
-constexpr double LANE_CHECK_FORWARD_DISTANCE = 40;
-constexpr double LANE_CHECK_BACKWARDS_DISTANCE = 20;
+// Distance front/back in the neighbouring lane which must be free for a lane change
+constexpr double LANE_CHECK_FORWARD_DISTANCE = 40; // m
+constexpr double LANE_CHECK_BACKWARDS_DISTANCE = 20; // m
 
 
 #endif //PATH_PLANNING_DEFINITIONS_H_H
