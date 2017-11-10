@@ -15,10 +15,10 @@ private:
 public:
   SensorFusion(const nlohmann::json &sensor_fusion);
 
-  bool is_car_in_range(double lag, int lane, double car_s, double range, bool forward) const;
+  bool is_lane_empty(double lag, int lane, double car_s) const;
 
   // Returns true if there is a car in the current lane that is too close to ego
-  bool is_too_close(double lag, int lane, double car_s) const;
+  bool is_too_close(double lag, int lane, double current_car_s, double lag_car_s) const;
 
 };
 
