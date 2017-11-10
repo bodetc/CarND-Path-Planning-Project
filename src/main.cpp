@@ -1,12 +1,7 @@
 #include <fstream>
-#include <math.h>
 #include <uWS/uWS.h>
-#include <chrono>
-#include <iostream>
 #include <thread>
-#include <vector>
 #include "Eigen-3.3/Eigen/Core"
-#include "Eigen-3.3/Eigen/QR"
 #include "json.hpp"
 #include "Controller.h"
 
@@ -20,11 +15,12 @@ using json = nlohmann::json;
 // else the empty string "" will be returned.
 string hasData(string s) {
   auto found_null = s.find("null");
-  auto b1 = s.find_first_of("[");
-  auto b2 = s.find_first_of("}");
+  auto b1 = s.find_first_of('[');
+  auto b2 = s.find_first_of('}');
   if (found_null != string::npos) {
     return "";
-  } else if (b1 != string::npos && b2 != string::npos) {
+  }
+  if (b1 != string::npos && b2 != string::npos) {
     return s.substr(b1, b2 - b1 + 2);
   }
   return "";
@@ -107,6 +103,9 @@ int main() {
           // Sensor Fusion Data, a list of all other cars on the same side of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
 
+
+          // My code here:
+          // All personal logic was implemented in the Controller class
           Trajectory trajectory = controller.compute_trajectory(car_x, car_y, car_s, car_d, car_yaw, car_speed,
                                                                 previous_path_x, previous_path_y,
                                                                 end_path_s,end_path_d,
@@ -121,7 +120,7 @@ int main() {
           //this_thread::sleep_for(chrono::milliseconds(1000));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 
-          //cout << msg << endl;
+          if(VERBOSE) cout << msg << endl;
 
         }
       } else {

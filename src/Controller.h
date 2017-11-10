@@ -13,7 +13,11 @@ class Controller {
   const Map map;
 
   double ref_vel = 0;
-  int lane = 1;
+
+  int current_lane = 1;
+  int target_lane = 1;
+
+  inline bool is_passing() { return current_lane != target_lane; }
 
 public:
   Controller(const std::vector<double> &maps_x, const std::vector<double> &maps_y, const std::vector<double> &maps_s);

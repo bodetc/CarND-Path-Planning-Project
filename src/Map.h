@@ -35,9 +35,6 @@ public:
 
 private:
 
-  // Transform from Cartesian x,y coordinates to Frenet s,d coordinates
-  std::vector<double> getFrenet(double x, double y, double theta) const;
-
   // Transform from Frenet s,d coordinates to Cartesian x,y
   std::vector<double> getXY(double s, double d) const;
 

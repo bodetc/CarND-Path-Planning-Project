@@ -28,7 +28,7 @@ bool SensorFusion::is_too_close(double lag, int lane, double current_car_s, doub
     if (Map::is_in_lane(vehicle.d, lane) && vehicle.s > current_car_s) {
       // Car will be too close at time t=lag
       if ((vehicle.s_at(lag) - lag_car_s) < FORWARD_DISTANCE) {
-        if (DEBUG) cout << "too close: " << vehicle.s_at(lag) - lag_car_s << " lane " << lane << endl;
+        if (VERBOSE) cout << "too close: " << vehicle.s_at(lag) - lag_car_s << " lane " << lane << endl;
         return true;
       }
     }
@@ -48,9 +48,9 @@ bool SensorFusion::is_lane_empty(double lag, int lane, double car_s) const {
       double distance = s - car_s;
       if (distance > -LANE_CHECK_BACKWARDS_DISTANCE
           && distance < LANE_CHECK_FORWARD_DISTANCE) {
-        return true;
+        return false;
       }
     }
   }
-  return false;
+  return true;
 }
