@@ -1,72 +1,29 @@
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
+
+## Goals
+The goal for this project is to safely navigate around a virtual highway with other traffic that is driving +-10 MPH of the 50 MPH speed limit.
+The car's localization and sensor fusion data is provided by the simulator, as well as a map list of waypoints around the highway.
+The car will drive as close as possible to the 50 MPH speed limit, which means passing slower traffic when possible.
+The car will avoid hitting other cars as well as driving inside of the marked road lanes, unless going from one lane to another.
+The car is able to make one complete loop around the 6946m highway.
+Also the car should not experience total acceleration over 10 m/s^2 and jerk that is greater than 50 m/s^3.
    
+## Instructions
+
 ### Simulator.
-You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases).
+The Term3 Simulator containing the Path Planning Project can be downloaded from [here](https://github.com/udacity/self-driving-car-sim/releases).
+Simply start the program and the only simulation contained in it.
+Then build and run the project (see below) to control the car.
 
-### Goals
-In this project your goal is to safely navigate around a virtual highway with other traffic that is driving +-10 MPH of the 50 MPH speed limit. You will be provided the car's localization and sensor fusion data, there is also a sparse map list of waypoints around the highway. The car should try to go as close as possible to the 50 MPH speed limit, which means passing slower traffic when possible, note that other cars will try to change lanes too. The car should avoid hitting other cars at all cost as well as driving inside of the marked road lanes at all times, unless going from one lane to another. The car should be able to make one complete loop around the 6946m highway. Since the car is trying to go 50 MPH, it should take a little over 5 minutes to complete 1 loop. Also the car should not experience total acceleration over 10 m/s^2 and jerk that is greater than 50 m/s^3.
-
-#### The map of the highway is in data/highway_map.txt
-Each waypoint in the list contains  [x,y,s,dx,dy] values. x and y are the waypoint's map coordinate position, the s value is the distance along the road to get to that waypoint in meters, the dx and dy values define the unit normal vector pointing outward of the highway loop.
-
-The highway's waypoints loop around so the frenet s value, distance along the road, goes from 0 to 6945.554.
-
-## Basic Build Instructions
+### Basic Build Instructions
 
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./path_planning`.
 
-Here is the data provided from the Simulator to the C++ Program
-
-#### Main car's localization Data (No Noise)
-
-["x"] The car's x position in map coordinates
-
-["y"] The car's y position in map coordinates
-
-["s"] The car's s position in frenet coordinates
-
-["d"] The car's d position in frenet coordinates
-
-["yaw"] The car's yaw angle in the map
-
-["speed"] The car's speed in MPH
-
-#### Previous path data given to the Planner
-
-//Note: Return the previous list but with processed points removed, can be a nice tool to show how far along
-the path has processed since last time. 
-
-["previous_path_x"] The previous list of x points previously given to the simulator
-
-["previous_path_y"] The previous list of y points previously given to the simulator
-
-#### Previous path's end s and d values 
-
-["end_path_s"] The previous list's last point's frenet s value
-
-["end_path_d"] The previous list's last point's frenet d value
-
-#### Sensor Fusion Data, a list of all other car's attributes on the same side of the road. (No Noise)
-
-["sensor_fusion"] A 2d vector of cars and then that car's [car's unique ID, car's x position in map coordinates, car's y position in map coordinates, car's x velocity in m/s, car's y velocity in m/s, car's s position in frenet coordinates, car's d position in frenet coordinates. 
-
-## Details
-
-1. The car uses a perfect controller and will visit every (x,y) point it recieves in the list every .02 seconds. The units for the (x,y) points are in meters and the spacing of the points determines the speed of the car. The vector going from a point to the next point in the list dictates the angle of the car. Acceleration both in the tangential and normal directions is measured along with the jerk, the rate of change of total Acceleration. The (x,y) point paths that the planner recieves should not have a total acceleration that goes over 10 m/s^2, also the jerk should not go over 50 m/s^3. (NOTE: As this is BETA, these requirements might change. Also currently jerk is over a .02 second interval, it would probably be better to average total acceleration over 1 second and measure jerk from that.
-
-2. There will be some latency between the simulator running and the path planner returning a path, with optimized code usually its not very long maybe just 1-3 time steps. During this delay the simulator will continue using points that it was last given, because of this its a good idea to store the last points you have used so you can have a smooth transition. previous_path_x, and previous_path_y can be helpful for this transition since they show the last points given to the simulator controller with the processed points already removed. You would either return a path that extends this previous path or make sure to create a new path that has a smooth transition with this last path.
-
-## Tips
-
-A really helpful resource for doing this project and creating smooth trajectories was using http://kluge.in-chemnitz.de/opensource/spline/, the spline function is in a single hearder file is really easy to use.
-
----
-
-## Dependencies
+### Dependencies
 
 * cmake >= 3.5
  * All OSes: [click here for installation instructions](https://cmake.org/install/)
@@ -87,54 +44,63 @@ A really helpful resource for doing this project and creating smooth trajectorie
     git checkout e94b6e1
     ```
 
-## Editor Settings
+## Model documentation
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+### Trajectory generation
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+To generate the trajectories, five sparse points are selected.
+The first two points are the last and previous positions of the car.
+Selecting both ensures that the generated trajectory will be tangent to the current one.
 
-## Code Style
+The next three points are created 30, 60 and 90 meters in front of the car, taking the Frenet coordinate `car_s` and adding this distance.
+For the perpendicular Frenet coordinate `d` of the points ahead, the value is always taken to be the center of the target lane.
+This allows to maintain the car in its lane smoothly, and as the next point is in 30 meters, also create smooth lane change trajectories.
+The following points at 60 and 90 meters ensure that the trajectory will be tangent to the target lane after 30 meters.
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+A coordinate transform is then applied to those points, placing the car at `(0, 0)` and facing the x-axis.
+A spline is created along the five 5 points, and is used to generate the trajectory points.
+The distance between those trajectory points is determined by the target velocity of the vehicle and the shape of the spline.
+This precise distance calculation allows for to reach speed as close to the target speed as possible.
+The trajectory points are then converted back to the global x-y coordinates system of the map.
 
-## Project Instructions and Rubric
+The reference speed is usually selected to be very close to the speed limit.
+However, once a vehicle is detected in the lane a some distance in front of the vehicle, this speed is slowly reduced for each iteration.
+Once this distance is clear again, the target speed is gradually increased back to towards the speed limit.
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+### Behaviour planning
 
+To decide when to change lane, a small behaviour planner was implemented.
+First, the behaviour planner checks whether a lane change is required at all, i.e. it checks that the car is currently following another one, and that the current speed is below a certain threshold.
+If a lane change is required, then the adjacent lanes are checked for traffic. The left lane is checked first as it usually makes more sense to pass from the left.
+If the lane is empty in a certain range in front and behind the car, then a lane change is initiated by changing the target lane.
+The trajectory generation (see above) will take care of a smooth change between the lane in a distance of around 30 meters.
 
-## Call for IDE Profiles Pull Requests
+### Results
 
-Help your fellow students!
+As demonstrated in the following screenshot, the car typically manages to drive around the track without any incidents.
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to ensure
-that students don't feel pressured to use one IDE or another.
+![](img/screenshot.png)
 
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
+The following criteria are fulfilled during the whole drive:
+* Maximum acceleration of 10 m/s<sup>2</sup>.
+* Maximum jerk of  10 m/s<sup>3</sup>.
+* The car drives according to the speed limit.
+* No collisions and stay on the road at all times
+* Stays in lane except for lane changes, which do not exceed 3 seconds
+* The car is able to change lane.
 
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
+### Limitations
 
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
+First, the trajectory points are added to the end of preexisting trajectory.
+This means a typical delay between the generation of the point and its execution of around one second.
+The car could therefore not be able to react if something happens, for instance another vehicle sudently changing lane in front of us, or braking hard.
+This could be corrected by adding a secondary system, like an AEB, that would check for potential collision in the currently planned trajectory.
+If such a collision it possible, it would overwrite the preexisting trajectory and create a new one that avoids collisions.
 
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+Secondly, the current behaviour of the car might be acceptable for U.S. roads, but it would be considered highly dangerous in Europe. There, cars should change back to the right most lane if this one is free.
+Furthermore, it is highly illegal (with immediate driving license removal in some countries) to pass a vehicle from the right side.
+Therefore, the lane changing logic should then be adapted to go back to the right lane if it is free.
+Furthermore, the speed should be set as to not drive faster than car on the current or any left lane.
+The most complicated would be to implement the double lane change logic:
+If the car is driving in the right lane, which is free, but there is a car driving slow on the middle lane (which is illegal for that car, but unfortunately happens often), the car should change to the left most lane (two lane changes), pass the slow car then go back to the right lane (two lane changes again).
+The car should not keep driving in the right lane and pass the car from there, as it is illegal.
